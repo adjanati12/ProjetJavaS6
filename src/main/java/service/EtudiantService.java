@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 
 public class EtudiantService {
+    private String anneeCourante = "2025-2026";
+    private Semestre semestreCourant = Semestre.IMPAIR;
 
     private ArrayList<Etudiant> etudiants = new ArrayList<>();
 
