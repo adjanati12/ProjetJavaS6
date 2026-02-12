@@ -41,3 +41,12 @@ public class Etudiant {
         return false;
     }
 }
+public int calculerECTSValides() {
+    int total = 0;
+    for (Inscription inscription : inscriptions) {
+        if (inscription.isValide()) {
+            total += inscription.getUe().getEcts();
+        }
+    }
+    return total;
+}
