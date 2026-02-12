@@ -35,4 +35,11 @@ public class EtudiantService {
             System.out.println("Prérequis non validés ! Pour l'étudiant : "+ etudiant.getNomComplet());
         }
     }
+    public String getAnneeCourante() {
+        return anneeCourante;
+    }
+    public Semestre getSemestreCourant() {
+        return semestreCourant;
+    }
+
 }
