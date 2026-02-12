@@ -44,4 +44,24 @@ public class EtudiantService {
         return semestreCourant;
     }
 
+    public void passerAuSemestreSuivant() {
+        if (semestreCourant == Semestre.IMPAIR) {
+            semestreCourant = Semestre.PAIR;
+        } else {
+            semestreCourant = Semestre.IMPAIR;
+        }
+    }
+
+    public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) {
+        for (Inscription ins : etudiant.getInscriptions()) {
+            if (ins.getUe().equals(ue)) {
+                ins.setValide(valide);
+                return true;
+            }
+        }
+        return false; // pas trouvé
+    }
+
+
+
 }
