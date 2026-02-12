@@ -50,3 +50,6 @@ public int calculerECTSValides() {
     }
     return total;
 }
+public boolean diplomeObtenu() {
+    return calculerECTSValides() >= 180;
+}
