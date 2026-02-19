@@ -21,14 +21,6 @@ public class Inscription {
         return valide;
     }
 
-    public String getAnneeUniversitaire(){
-        return this.anneeUniversitaire;
-    }
-
-    public Semestre getSemestre(){
-        return this.semestre;
-    }
-
     public void setValide(boolean valide) {
         this.valide = valide;
     }

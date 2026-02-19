@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 
 public class EtudiantService {
+    private String anneeCourante = "2025-2026";
+    private Semestre semestreCourant = Semestre.IMPAIR;
 
     private ArrayList<Etudiant> etudiants = new ArrayList<>();
 
@@ -35,4 +37,31 @@ public class EtudiantService {
             System.out.println("Prérequis non validés ! Pour l'étudiant : "+ etudiant.getNomComplet());
         }
     }
+    public String getAnneeCourante() {
+        return anneeCourante;
+    }
+    public Semestre getSemestreCourant() {
+        return semestreCourant;
+    }
+
+    public void passerAuSemestreSuivant() {
+        if (semestreCourant == Semestre.IMPAIR) {
+            semestreCourant = Semestre.PAIR;
+        } else {
+            semestreCourant = Semestre.IMPAIR;
+        }
+    }
+
+    public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) {
+        for (Inscription ins : etudiant.getInscriptions()) {
+            if (ins.getUe().equals(ue)) {
+                ins.setValide(valide);
+                return true;
+            }
+        }
+        return false; // pas trouvé
+    }
+
+
+
 }
