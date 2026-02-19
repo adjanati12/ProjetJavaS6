@@ -50,8 +50,8 @@ public class MainFrame extends JFrame {
                         nomField.getText(),
                         prenomField.getText()
                 );
-                JOptionPane.showMessageDialog(this, "Étudiant ajouté !");
-                // plus tard: rafraîchir une liste/table si vous en avez une
+
+                JOptionPane.showMessageDialog(this, "Étudiant ajouté avec succès !");
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(
                         this,
@@ -62,5 +62,6 @@ public class MainFrame extends JFrame {
             }
         }
     }
+
 }
 
