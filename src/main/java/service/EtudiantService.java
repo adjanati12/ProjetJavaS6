@@ -1,22 +1,20 @@
 package service;
 
 import model.*;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class EtudiantService {
-    private String anneeCourante = "2025-2026";
-    private Semestre semestreCourant = Semestre.IMPAIR;
 
-    private ArrayList<Etudiant> etudiants = new ArrayList<>();
+    private final String anneeCourante = "2025-2026";
+    private Semestre semestreCourant = Semestre.IMPAIR;
+    private final List<Etudiant> etudiants = new ArrayList<>();
 
     public void ajouterEtudiant(Etudiant e) {
         etudiants.add(e);
     }
 
-    public ArrayList<Etudiant> getEtudiants() {
+    public List<Etudiant> getEtudiants() {
         return etudiants;
     }
 
@@ -32,17 +30,15 @@ public class EtudiantService {
     public void inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) {
         if (peutSInscrire(etudiant, ue)) {
             etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
-            System.out.println("Inscription réalisée avec succées ! Pour l'étudiant : "+ etudiant.getNomComplet());
+            javax.swing.JOptionPane.showMessageDialog(null, "Inscription réalisée avec succès ! Pour l'étudiant : " + etudiant.getNomComplet());
         } else {
-            System.out.println("Prérequis non validés ! Pour l'étudiant : "+ etudiant.getNomComplet());
+            javax.swing.JOptionPane.showMessageDialog(null, "Prérequis non validés ! Pour l'étudiant : " + etudiant.getNomComplet());
         }
     }
-    public String getAnneeCourante() {
-        return anneeCourante;
-    }
-    public Semestre getSemestreCourant() {
-        return semestreCourant;
-    }
+
+    public String getAnneeCourante() { return anneeCourante; }
+
+    public Semestre getSemestreCourant() { return semestreCourant; }
 
     public void passerAuSemestreSuivant() {
         if (semestreCourant == Semestre.IMPAIR) {
@@ -59,9 +55,6 @@ public class EtudiantService {
                 return true;
             }
         }
-        return false; // pas trouvé
+        return false;
     }
-
-
-
 }
