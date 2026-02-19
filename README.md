@@ -1,7 +1,7 @@
 # Suivi des étudiants - Formation à la carte
 
 ## Membres du groupe
--Safia ABDELKERIM
+- Safia ABDELKERIM
 - Habybatou BAKHOUM
 - Aya DJANATI
 
