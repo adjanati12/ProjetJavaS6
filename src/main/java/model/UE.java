@@ -1,4 +1,5 @@
 package model;
+import java.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,4 +50,17 @@ public class UE {
     public String toString() {
         return code + " - " + nom;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UE)) return false;
+        UE ue = (UE) o;
+        return Objects.equals(code, ue.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
+    }
+
 }
