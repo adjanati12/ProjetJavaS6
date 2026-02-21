@@ -1,16 +1,22 @@
 package fr.univ.miage;
-import ui.MainFrame;
-import model.*;
-import service.EtudiantService;
 
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/accueil.fxml"));
+        Scene scene = new Scene(loader.load(), 600, 400);
+        stage.setTitle("Suivi des étudiants");
+        stage.setScene(scene);
+        stage.show();
+    }
 
     public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> {
-            new MainFrame().setVisible(true);
-        });
+        launch(args);
     }
 }
