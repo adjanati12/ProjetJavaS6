@@ -17,6 +17,33 @@ public class EtudiantService {
     public List<Etudiant> getEtudiants() {
         return etudiants;
     }
+    public boolean numeroExisteDeja(String numero) {
+        if (numero == null) return false;
+        String n = numero.trim();
+        for (Etudiant e : etudiants) {
+            if (e.getNumero().equals(n)) return true;
+        }
+        return false;
+    }
+
+    public Etudiant ajouterEtudiant(String numero, String nom, String prenom) {
+        if (numero == null || numero.isBlank()) throw new IllegalArgumentException("Numéro étudiant obligatoire");
+        if (nom == null || nom.isBlank()) throw new IllegalArgumentException("Nom obligatoire");
+        if (prenom == null || prenom.isBlank()) throw new IllegalArgumentException("Prénom obligatoire");
+
+        String num = numero.trim();
+        String n = nom.trim();
+        String p = prenom.trim();
+
+        if (numeroExisteDeja(num)) {
+            throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
+        }
+
+        Etudiant e = new Etudiant(num, n, p);
+        etudiants.add(e);
+        return e;
+    }
+
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
         for (UE prerequis : ue.getPrerequis()) {

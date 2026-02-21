@@ -1,4 +1,5 @@
 package model;
+import java.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,4 +72,17 @@ public class Etudiant {
     public boolean diplomeObtenu() {
         return calculerECTSValides() >= 180;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Etudiant)) return false;
+        Etudiant etudiant = (Etudiant) o;
+        return Objects.equals(numero, etudiant.numero);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
+    }
+
 }
