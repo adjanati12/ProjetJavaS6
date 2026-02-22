@@ -14,6 +14,8 @@ public class Main extends Application {
         stage.setTitle("Suivi des étudiants");
         stage.setScene(scene);
         stage.show();
+        stage.toFront();
+        stage.requestFocus();
     }
 
     public static void main(String[] args) {
