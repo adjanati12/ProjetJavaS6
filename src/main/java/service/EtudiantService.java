@@ -17,6 +17,7 @@ public class EtudiantService {
     public List<Etudiant> getEtudiants() {
         return etudiants;
     }
+
     public boolean numeroExisteDeja(String numero) {
         if (numero == null) return false;
         String n = numero.trim();
@@ -44,7 +45,6 @@ public class EtudiantService {
         return e;
     }
 
-
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
         for (UE prerequis : ue.getPrerequis()) {
             if (!etudiant.aValide(prerequis)) {
@@ -54,12 +54,12 @@ public class EtudiantService {
         return true;
     }
 
-    public void inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) {
+    public boolean inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) {
         if (peutSInscrire(etudiant, ue)) {
             etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
-            javax.swing.JOptionPane.showMessageDialog(null, "Inscription réalisée avec succès ! Pour l'étudiant : " + etudiant.getNomComplet());
+            return true;
         } else {
-            javax.swing.JOptionPane.showMessageDialog(null, "Prérequis non validés ! Pour l'étudiant : " + etudiant.getNomComplet());
+            return false;
         }
     }
 
