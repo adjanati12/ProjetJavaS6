@@ -1,6 +1,5 @@
 package model;
 import java.util.Objects;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import java.util.List;
  * Classe représentant un étudiant.
  */
 public class Etudiant {
-
     private String numero;
     private String nom;
     private String prenom;
@@ -33,19 +31,25 @@ public class Etudiant {
     }
 
     /** @return la liste des inscriptions */
-    public List<Inscription> getInscriptions() {
-        return inscriptions;
-    }
+    public List<Inscription> getInscriptions() { return inscriptions; }
 
     /** @return le numéro étudiant */
-    public String getNumero() {
-        return numero;
-    }
+    public String getNumero() { return numero; }
+
+    /** @return le nom */
+    public String getNom() { return nom; }
+
+    /** @return le prénom */
+    public String getPrenom() { return prenom; }
+
+    /** @param nom le nouveau nom */
+    public void setNom(String nom) { this.nom = nom; }
+
+    /** @param prenom le nouveau prénom */
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
     /** @return le nom complet */
-    public String getNomComplet() {
-        return prenom + " " + nom;
-    }
+    public String getNomComplet() { return prenom + " " + nom; }
 
     /** @return true si l'étudiant a validé l'UE */
     public boolean aValide(UE ue) {
@@ -72,6 +76,7 @@ public class Etudiant {
     public boolean diplomeObtenu() {
         return calculerECTSValides() >= 180;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,8 +86,5 @@ public class Etudiant {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(numero);
-    }
-
+    public int hashCode() { return Objects.hash(numero); }
 }

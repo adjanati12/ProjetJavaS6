@@ -25,7 +25,6 @@ public class AccueilController {
 
     @FXML
     public void initialize() {
-        // Chargement des données depuis les fichiers CSV
         CsvLoader.chargerUEs(service);
         CsvLoader.chargerEtudiants(service);
         CsvLoader.chargerInscriptions(service);
@@ -57,6 +56,30 @@ public class AccueilController {
             DetailEtudiantController ctrl = loader.getController();
             ctrl.setEtudiant(etudiant, service);
             stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void ouvrirFormulaireModification() {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Veuillez sélectionner un étudiant à modifier.");
+            alert.showAndWait();
+            return;
+        }
+        Etudiant etudiant = service.getEtudiants().get(index);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Modifier - " + etudiant.getNomComplet());
+            stage.setScene(new Scene(loader.load()));
+            ModifierEtudiantController ctrl = loader.getController();
+            ctrl.setEtudiant(etudiant, this);
+            stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
