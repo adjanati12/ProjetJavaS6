@@ -4,6 +4,9 @@ import model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service de gestion des étudiants et des inscriptions.
+ */
 public class EtudiantService {
 
     private final String anneeCourante = "2025-2026";
@@ -11,19 +14,18 @@ public class EtudiantService {
     private final List<Etudiant> etudiants = new ArrayList<>();
     private final List<UE> ues = new ArrayList<>();
 
-    public EtudiantService() {
-        ues.add(new UE("INF101", "Algorithmique", 6));
-        ues.add(new UE("INF102", "Programmation Objet", 6));
-        ues.add(new UE("INF103", "Bases de données", 6));
-        ues.add(new UE("INF104", "Réseaux", 3));
-        ues.add(new UE("MGT101", "Gestion de projet", 3));
-    }
-
     public List<UE> getUes() { return ues; }
 
     public UE getUeParCode(String code) {
         for (UE ue : ues) {
             if (ue.getCode().equals(code)) return ue;
+        }
+        return null;
+    }
+
+    public Etudiant getEtudiantParNumero(String numero) {
+        for (Etudiant e : etudiants) {
+            if (e.getNumero().equals(numero)) return e;
         }
         return null;
     }
@@ -69,9 +71,7 @@ public class EtudiantService {
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
         for (UE prerequis : ue.getPrerequis()) {
-            if (!etudiant.aValide(prerequis)) {
-                return false;
-            }
+            if (!etudiant.aValide(prerequis)) return false;
         }
         return true;
     }

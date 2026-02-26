@@ -62,6 +62,34 @@ public class DetailEtudiantController {
     }
 
     @FXML
+    public void validerUE() {
+        int index = listeInscriptions.getSelectionModel().getSelectedIndex();
+        if (index < 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Sélectionnez une UE dans la liste.");
+            alert.showAndWait();
+            return;
+        }
+        Inscription ins = etudiant.getInscriptions().get(index);
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Résultat UE");
+        confirm.setHeaderText(ins.getUe().getNom());
+        confirm.setContentText("L'étudiant a-t-il validé cette UE ?");
+        ButtonType btnValider = new ButtonType("✅ Validée");
+        ButtonType btnEchouer = new ButtonType("❌ Échouée");
+        ButtonType btnAnnuler = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirm.getButtonTypes().setAll(btnValider, btnEchouer, btnAnnuler);
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == btnValider) {
+            service.marquerResultat(etudiant, ins.getUe(), true);
+            rafraichirInscriptions();
+        } else if (result.isPresent() && result.get() == btnEchouer) {
+            service.marquerResultat(etudiant, ins.getUe(), false);
+            rafraichirInscriptions();
+        }
+    }
+
+    @FXML
     public void fermer() {
         ((Stage) labelNom.getScene().getWindow()).close();
     }
