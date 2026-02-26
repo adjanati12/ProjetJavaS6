@@ -9,6 +9,24 @@ public class EtudiantService {
     private final String anneeCourante = "2025-2026";
     private Semestre semestreCourant = Semestre.IMPAIR;
     private final List<Etudiant> etudiants = new ArrayList<>();
+    private final List<UE> ues = new ArrayList<>();
+
+    public EtudiantService() {
+        ues.add(new UE("INF101", "Algorithmique", 6));
+        ues.add(new UE("INF102", "Programmation Objet", 6));
+        ues.add(new UE("INF103", "Bases de données", 6));
+        ues.add(new UE("INF104", "Réseaux", 3));
+        ues.add(new UE("MGT101", "Gestion de projet", 3));
+    }
+
+    public List<UE> getUes() { return ues; }
+
+    public UE getUeParCode(String code) {
+        for (UE ue : ues) {
+            if (ue.getCode().equals(code)) return ue;
+        }
+        return null;
+    }
 
     public void ajouterEtudiant(Etudiant e) {
         etudiants.add(e);
@@ -45,6 +63,10 @@ public class EtudiantService {
         return e;
     }
 
+    public boolean supprimerEtudiant(String numero) {
+        return etudiants.removeIf(e -> e.getNumero().equals(numero));
+    }
+
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
         for (UE prerequis : ue.getPrerequis()) {
             if (!etudiant.aValide(prerequis)) {
@@ -58,9 +80,8 @@ public class EtudiantService {
         if (peutSInscrire(etudiant, ue)) {
             etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public String getAnneeCourante() { return anneeCourante; }
@@ -68,11 +89,7 @@ public class EtudiantService {
     public Semestre getSemestreCourant() { return semestreCourant; }
 
     public void passerAuSemestreSuivant() {
-        if (semestreCourant == Semestre.IMPAIR) {
-            semestreCourant = Semestre.PAIR;
-        } else {
-            semestreCourant = Semestre.IMPAIR;
-        }
+        semestreCourant = (semestreCourant == Semestre.IMPAIR) ? Semestre.PAIR : Semestre.IMPAIR;
     }
 
     public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) {

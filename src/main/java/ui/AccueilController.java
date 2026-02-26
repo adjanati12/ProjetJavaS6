@@ -3,13 +3,18 @@ package ui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Etudiant;
-import model.UE;
 import model.Semestre;
+import model.UE;
 import service.EtudiantService;
+
+import java.util.Optional;
 
 public class AccueilController {
 
@@ -20,11 +25,11 @@ public class AccueilController {
 
     @FXML
     public void initialize() {
-        UE algo = new UE("INF101", "Algorithmique", 6);
-        UE progObj = new UE("INF102", "Programmation Objet", 6);
-        UE bdd = new UE("INF103", "Bases de données", 6);
-        UE reseau = new UE("INF104", "Réseaux", 3);
-        UE gestion = new UE("MGT101", "Gestion de projet", 3);
+        UE algo = service.getUeParCode("INF101");
+        UE progObj = service.getUeParCode("INF102");
+        UE bdd = service.getUeParCode("INF103");
+        UE reseau = service.getUeParCode("INF104");
+        UE gestion = service.getUeParCode("MGT101");
 
         Etudiant e1 = new Etudiant("23001", "Bakhoum", "Habybatou");
         Etudiant e2 = new Etudiant("23002", "Djanati", "Aya");
@@ -66,6 +71,51 @@ public class AccueilController {
         service.ajouterEtudiant(e10);
 
         rafraichirListe();
+
+        listeEtudiants.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() == 2) {
+                ouvrirDetails();
+            }
+        });
+    }
+
+    private void ouvrirDetails() {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) return;
+        Etudiant etudiant = service.getEtudiants().get(index);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/detailEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Détails - " + etudiant.getNomComplet());
+            stage.setScene(new Scene(loader.load(), 400, 400));
+            DetailEtudiantController ctrl = loader.getController();
+            ctrl.setEtudiant(etudiant, service);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void supprimerEtudiant() {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Aucune sélection");
+            alert.setContentText("Veuillez sélectionner un étudiant à supprimer.");
+            alert.showAndWait();
+            return;
+        }
+        Etudiant etudiant = service.getEtudiants().get(index);
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmation");
+        confirm.setContentText("Supprimer " + etudiant.getNomComplet() + " ?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.supprimerEtudiant(etudiant.getNumero());
+            rafraichirListe();
+        }
     }
 
     @FXML
