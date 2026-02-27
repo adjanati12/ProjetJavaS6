@@ -2,18 +2,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ui.DetailEtudiantController"
       style="-fx-padding: 20; -fx-background-color: white;">
+
     <Label fx:id="labelNom" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
     <Label fx:id="labelNumero" style="-fx-text-fill: gray;"/>
+    <Label fx:id="labelEcts" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;"/>
     <Separator/>
-    <Label text="Inscriptions aux UE :" style="-fx-font-weight: bold;"/>
-    <ListView fx:id="listeInscriptions" prefHeight="200"/>
+
+    <Label text="UE suivies actuellement et resultats :" style="-fx-font-weight: bold;"/>
+    <ListView fx:id="listeInscriptions" prefHeight="150"/>
+
+    <Separator/>
+
+    <Label text="UE disponibles (prerequis valides) :" style="-fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+    <ListView fx:id="listeUEDisponibles" prefHeight="120"/>
+
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="+ Inscrire à une UE" onAction="#ajouterInscription"
+        <Button text="+ Inscrire a une UE" onAction="#ajouterInscription"
                 style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-        <Button text="Résultat UE" onAction="#validerUE"
+        <Button text="Resultat UE" onAction="#validerUE"
                 style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
         <Button text="Fermer" onAction="#fermer"/>
     </HBox>

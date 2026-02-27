@@ -4,29 +4,38 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="430.0" prefWidth="620.0"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ui.AccueilController">
-    <children>
-        <Label text="Suivi des étudiants" layoutX="20" layoutY="15"
-               style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-        <Label fx:id="labelSemestre" layoutX="380" layoutY="18"
-               style="-fx-text-fill: #2196F3; -fx-font-weight: bold;"/>
-        <Label text="Double-cliquez sur un étudiant pour voir ses détails"
-               layoutX="20" layoutY="45" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-        <ListView fx:id="listeEtudiants" layoutX="20" layoutY="70"
-                  prefHeight="270.0" prefWidth="580.0"/>
-        <HBox layoutX="20" layoutY="355" spacing="10">
-            <Button text="Ajouter" onAction="#ouvrirFormulaireAjout"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-            <Button text="Modifier" onAction="#ouvrirFormulaireModification"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-            <Button text="Supprimer" onAction="#supprimerEtudiant"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
-            <Button text="Passer au semestre suivant" onAction="#passerSemestreSuivant"
-                    style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
-        </HBox>
-    </children>
-</AnchorPane>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ui.AccueilController"
+      style="-fx-padding: 20;">
+
+    <HBox style="-fx-padding: 0 0 5 0;">
+        <Label text="Suivi des etudiants"
+               style="-fx-font-size: 22; -fx-font-weight: bold;"/>
+        <Label fx:id="labelSemestre"
+               style="-fx-text-fill: #2196F3; -fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 6 0 0 20;"/>
+    </HBox>
+
+    <Label text="Double-cliquez sur un etudiant pour voir ses details"
+           style="-fx-text-fill: gray; -fx-font-size: 11; -fx-padding: 0 0 10 0;"/>
+
+    <ListView fx:id="listeEtudiants"
+              VBox.vgrow="ALWAYS"
+              style="-fx-font-size: 13;"/>
+
+    <HBox spacing="12" style="-fx-padding: 15 0 0 0;">
+        <Button text="Ajouter" onAction="#ouvrirFormulaireAjout"
+                prefHeight="35" prefWidth="110"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="Modifier" onAction="#ouvrirFormulaireModification"
+                prefHeight="35" prefWidth="110"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="Supprimer" onAction="#supprimerEtudiant"
+                prefHeight="35" prefWidth="110"
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="Passer au semestre suivant" onAction="#passerSemestreSuivant"
+                prefHeight="35" prefWidth="230"
+                style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+    </HBox>
+</VBox>
