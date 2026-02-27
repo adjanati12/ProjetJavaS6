@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class EtudiantService {
 
-    private final String anneeCourante = "2025-2026";
+    private String anneeCourante = "2025-2026";
     private Semestre semestreCourant = Semestre.IMPAIR;
     private final List<Etudiant> etudiants = new ArrayList<>();
     private final List<UE> ues = new ArrayList<>();
@@ -34,33 +34,22 @@ public class EtudiantService {
         etudiants.add(e);
     }
 
-    public List<Etudiant> getEtudiants() {
-        return etudiants;
-    }
+    public List<Etudiant> getEtudiants() { return etudiants; }
 
     public boolean numeroExisteDeja(String numero) {
         if (numero == null) return false;
-        String n = numero.trim();
         for (Etudiant e : etudiants) {
-            if (e.getNumero().equals(n)) return true;
+            if (e.getNumero().equals(numero.trim())) return true;
         }
         return false;
     }
 
     public Etudiant ajouterEtudiant(String numero, String nom, String prenom) {
-        if (numero == null || numero.isBlank()) throw new IllegalArgumentException("Numéro étudiant obligatoire");
+        if (numero == null || numero.isBlank()) throw new IllegalArgumentException("Numero etudiant obligatoire");
         if (nom == null || nom.isBlank()) throw new IllegalArgumentException("Nom obligatoire");
-        if (prenom == null || prenom.isBlank()) throw new IllegalArgumentException("Prénom obligatoire");
-
-        String num = numero.trim();
-        String n = nom.trim();
-        String p = prenom.trim();
-
-        if (numeroExisteDeja(num)) {
-            throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
-        }
-
-        Etudiant e = new Etudiant(num, n, p);
+        if (prenom == null || prenom.isBlank()) throw new IllegalArgumentException("Prenom obligatoire");
+        if (numeroExisteDeja(numero)) throw new IllegalArgumentException("Numero etudiant deja utilise : " + numero);
+        Etudiant e = new Etudiant(numero.trim(), nom.trim(), prenom.trim());
         etudiants.add(e);
         return e;
     }
@@ -89,7 +78,25 @@ public class EtudiantService {
     public Semestre getSemestreCourant() { return semestreCourant; }
 
     public void passerAuSemestreSuivant() {
-        semestreCourant = (semestreCourant == Semestre.IMPAIR) ? Semestre.PAIR : Semestre.IMPAIR;
+        if (semestreCourant == Semestre.IMPAIR) {
+            semestreCourant = Semestre.PAIR;
+            // Recharge les inscriptions du semestre PAIR
+            for (Etudiant e : etudiants) {
+                e.getInscriptions().clear();
+            }
+            CsvLoader.chargerInscriptionsFichier(this, "/data/inscriptions_pair.csv");
+        } else {
+            semestreCourant = Semestre.IMPAIR;
+            String[] parts = anneeCourante.split("-");
+            int debut = Integer.parseInt(parts[0]) + 1;
+            int fin = Integer.parseInt(parts[1]) + 1;
+            anneeCourante = debut + "-" + fin;
+            // Recharge les inscriptions du semestre IMPAIR
+            for (Etudiant e : etudiants) {
+                e.getInscriptions().clear();
+            }
+            CsvLoader.chargerInscriptionsFichier(this, "/data/inscriptions.csv");
+        }
     }
 
     public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) {

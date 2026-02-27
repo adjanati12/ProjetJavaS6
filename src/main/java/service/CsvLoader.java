@@ -5,16 +5,12 @@ import model.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 /**
  * Service de chargement des données depuis les fichiers CSV.
  */
 public class CsvLoader {
 
-    /**
-     * Charge les UE depuis le fichier ues.csv dans le service.
-     */
     public static void chargerUEs(EtudiantService service) {
         try (InputStream is = CsvLoader.class.getResourceAsStream("/data/ues.csv");
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -27,7 +23,6 @@ public class CsvLoader {
                     String code = parts[0].trim();
                     String nom = parts[1].trim();
                     int credits = Integer.parseInt(parts[2].trim());
-                    // Remplace l'UE existante si elle existe déjà
                     if (service.getUeParCode(code) == null) {
                         service.getUes().add(new UE(code, nom, credits));
                     }
@@ -38,12 +33,9 @@ public class CsvLoader {
         }
     }
 
-    /**
-     * Charge les étudiants depuis le fichier etudiants.csv dans le service.
-     */
     public static void chargerEtudiants(EtudiantService service) {
         try (InputStream is = CsvLoader.class.getResourceAsStream("/data/etudiants.csv");
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
             String ligne;
             boolean premiere = true;
             while ((ligne = br.readLine()) != null) {
@@ -59,15 +51,16 @@ public class CsvLoader {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Erreur chargement étudiants : " + e.getMessage());
+            System.err.println("Erreur chargement etudiants : " + e.getMessage());
         }
     }
 
-    /**
-     * Charge les inscriptions depuis le fichier inscriptions.csv dans le service.
-     */
     public static void chargerInscriptions(EtudiantService service) {
-        try (InputStream is = CsvLoader.class.getResourceAsStream("/data/inscriptions.csv");
+        chargerInscriptionsFichier(service, "/data/inscriptions.csv");
+    }
+
+    public static void chargerInscriptionsFichier(EtudiantService service, String fichier) {
+        try (InputStream is = CsvLoader.class.getResourceAsStream(fichier);
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String ligne;
             boolean premiere = true;
@@ -79,11 +72,16 @@ public class CsvLoader {
                     String codeUE = parts[1].trim();
                     String annee = parts[2].trim();
                     Semestre semestre = Semestre.valueOf(parts[3].trim());
+                    boolean valide = parts.length > 4 && parts[4].trim().equals("true");
+                    boolean echouee = parts.length > 5 && parts[5].trim().equals("true");
 
                     Etudiant etudiant = service.getEtudiantParNumero(numero);
                     UE ue = service.getUeParCode(codeUE);
                     if (etudiant != null && ue != null) {
-                        service.inscrire(etudiant, ue, annee, semestre);
+                        Inscription ins = new Inscription(ue, annee, semestre);
+                        ins.setValide(valide);
+                        if (!valide) ins.setEchouee(echouee);
+                        etudiant.ajouterInscription(ins);
                     }
                 }
             }
