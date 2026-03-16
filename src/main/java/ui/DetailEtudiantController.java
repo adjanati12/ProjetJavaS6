@@ -1,6 +1,8 @@
 package ui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,7 +35,7 @@ public class DetailEtudiantController {
         rafraichirUEDisponibles();
     }
 
-    private void rafraichirInscriptions() {
+    public void rafraichirInscriptions() {
         listeInscriptions.getItems().clear();
         labelEcts.setText("ECTS valides : " + etudiant.calculerECTSValides());
         for (Inscription ins : etudiant.getInscriptions()) {
@@ -76,40 +78,19 @@ public class DetailEtudiantController {
 
     @FXML
     public void ajouterInscription() {
-        List<UE> disponibles = new ArrayList<>();
-        List<UE> dejaInscrit = new ArrayList<>();
-        for (Inscription ins : etudiant.getInscriptions()) {
-            dejaInscrit.add(ins.getUe());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/inscrireEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Inscrire - " + etudiant.getNomComplet());
+            stage.setScene(new Scene(loader.load()));
+            InscriptionController ctrl = loader.getController();
+            ctrl.setDonnees(etudiant, service, this);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        for (UE ue : service.getUes()) {
-            if (!dejaInscrit.contains(ue) && service.peutSInscrire(etudiant, ue)) {
-                disponibles.add(ue);
-            }
-        }
-        if (disponibles.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.initOwner(labelNom.getScene().getWindow());
-            alert.setContentText("Aucune UE disponible pour cet etudiant.");
-            alert.showAndWait();
-            return;
-        }
-        ChoiceDialog<UE> dialog = new ChoiceDialog<>(disponibles.get(0), disponibles);
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(labelNom.getScene().getWindow());
-        dialog.setTitle("Inscription");
-        dialog.setHeaderText("Inscrire " + etudiant.getNomComplet());
-        dialog.setContentText("Choisir une UE :");
-        Optional<UE> result = dialog.showAndWait();
-        result.ifPresent(ue -> {
-            boolean ok = service.inscrire(etudiant, ue, service.getAnneeCourante(), service.getSemestreCourant());
-            if (ok) {
-                rafraichirInscriptions();
-                rafraichirUEDisponibles();
-            }
-        });
     }
-
     @FXML
     public void validerUE() {
         int index = listeInscriptions.getSelectionModel().getSelectedIndex();

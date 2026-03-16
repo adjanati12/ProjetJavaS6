@@ -87,4 +87,15 @@ public class Etudiant {
 
     @Override
     public int hashCode() { return Objects.hash(numero); }
+
+public int calculerECTSParSemestre(String anneeUniversitaire, Semestre semestre) {
+    int totalEcts = 0;
+    for (Inscription inscription : inscriptions) {
+        if (inscription.getAnneeUniversitaire().equals(anneeUniversitaire) &&
+                inscription.getSemestre() == semestre) {
+            totalEcts += inscription.getUe().getEcts();
+        }
+    }
+    return totalEcts;
+}
 }
