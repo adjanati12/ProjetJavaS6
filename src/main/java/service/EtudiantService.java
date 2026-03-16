@@ -36,19 +36,19 @@ public class EtudiantService {
         return null;
     }
 
-    public void ajouterEtudiant(Etudiant e) throws SQLException {
-        if (numero == null || numero.isBlank())
+    public Etudiant ajouterEtudiant(Etudiant e) throws SQLException {
+        if (e.getNumero() == null || e.getNumero().isBlank())
             throw new IllegalArgumentException("Numéro étudiant obligatoire");
-        if (nom == null || nom.isBlank())
+
+        if (e.getNom() == null || e.getNom().isBlank())
             throw new IllegalArgumentException("Nom obligatoire");
-        if (prenom == null || prenom.isBlank())
+
+        if (e.getPrenom() == null || e.getPrenom().isBlank())
             throw new IllegalArgumentException("Prénom obligatoire");
 
-        String num = numero.trim();
+        String num = e.getNumero().trim();
         if (numeroExisteDeja(num))
             throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
-
-        Etudiant e = new Etudiant(num, nom.trim(), prenom.trim());
 
         // Persister en base
         Connection conn = DatabaseConnection.getInstance().getConnection();
@@ -57,8 +57,6 @@ public class EtudiantService {
         // Ajouter en mémoire
         etudiants.add(e);
         return e;
-    }
-        etudiants.add(e);
     }
 
     public List<Etudiant> getEtudiants() { return etudiants; }
@@ -84,7 +82,8 @@ public class EtudiantService {
     public boolean supprimerEtudiant(String numero) throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         new EtudiantDAO(conn).delete(numero);
-        etudiants.removeIf(e -> e.getNumero().equals(numero));
+        return etudiants.removeIf(e -> e.getNumero().equals(numero));
+
     }
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
@@ -171,4 +170,4 @@ public void modifierEtudiant(Etudiant etudiant) throws SQLException {
     // L'objet en mémoire a déjà été modifié via ses setters
 }
     }
-}
+
