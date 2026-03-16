@@ -44,24 +44,27 @@ public class MainFrame extends JFrame {
         );
 
         if (result == JOptionPane.OK_OPTION) {
-            try {
-                service.ajouterEtudiant(
-                        numeroField.getText(),
-                        nomField.getText(),
-                        prenomField.getText()
-                );
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    service.ajouterEtudiant(
+                            numeroField.getText(),
+                            nomField.getText(),
+                            prenomField.getText()
+                    );
 
-                JOptionPane.showMessageDialog(this, "Étudiant ajouté avec succès !");
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        ex.getMessage(),
-                        "Erreur",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                    JOptionPane.showMessageDialog(this, "Étudiant ajouté avec succès !");
+                } catch (IllegalArgumentException ex) {
+                    // Erreurs métier (champs vides, numéro déjà pris)
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                } catch (java.sql.SQLException ex) {
+                    // ERREUR CORRIGÉE : Gestion de la base de données
+                    JOptionPane.showMessageDialog(this, "Erreur de base de données : " + ex.getMessage(),
+                            "Erreur Technique", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
             }
         }
-    }
 
+    }
 }
 

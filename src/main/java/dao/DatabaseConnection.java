@@ -8,5 +8,6 @@ public class DatabaseConnection {
     private static final String PASSWORD = "Beomgyu2005.";
 
     public static DatabaseMetaData getInstance() {
+        return null;
     }
 }

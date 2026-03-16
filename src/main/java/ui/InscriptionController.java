@@ -40,21 +40,36 @@ public class InscriptionController {
      * Inscrit l'étudiant à l'UE sélectionnée.
      */
     @FXML
+    /**
+     * Inscrit l'étudiant à l'UE sélectionnée.
+     */
     public void inscrire() {
         UE ue = comboUE.getSelectionModel().getSelectedItem();
         if (ue == null) {
             messageErreur.setText("Veuillez sélectionner une UE.");
             return;
         }
-        boolean ok = service.inscrire(etudiant, ue, service.getAnneeCourante(), service.getSemestreCourant());
-        if (ok) {
+
+        try {
+            // On tente l'inscription
+            // Cette méthode lance une exception si > 30 ECTS ou si erreur SQL
+            service.inscrire(etudiant, ue, service.getAnneeCourante(), service.getSemestreCourant());
+
+            // Si on arrive ici, c'est que ça a marché !
             detailController.rafraichirInscriptions();
             fermer();
-        } else {
-            messageErreur.setText("Inscription impossible : prérequis non validés.");
+
+        } catch (IllegalArgumentException e) {
+            // ICI : On récupère tes messages : "Limite d'ECTS dépassée" ou "Prérequis non validés"
+            messageErreur.setText(e.getMessage());
+            messageErreur.setStyle("-fx-text-fill: red;"); // Optionnel : mettre en rouge
+
+        } catch (java.sql.SQLException e) {
+            // ICI : Erreur technique de base de données
+            messageErreur.setText("Erreur DB : " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
     /**
      * Ferme la fenêtre sans inscrire.
      */

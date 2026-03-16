@@ -36,31 +36,6 @@ public class EtudiantService {
         return null;
     }
 
-    public void ajouterEtudiant(Etudiant e) throws SQLException {
-        if (numero == null || numero.isBlank())
-            throw new IllegalArgumentException("Numéro étudiant obligatoire");
-        if (nom == null || nom.isBlank())
-            throw new IllegalArgumentException("Nom obligatoire");
-        if (prenom == null || prenom.isBlank())
-            throw new IllegalArgumentException("Prénom obligatoire");
-
-        String num = numero.trim();
-        if (numeroExisteDeja(num))
-            throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
-
-        Etudiant e = new Etudiant(num, nom.trim(), prenom.trim());
-
-        // Persister en base
-        Connection conn = DatabaseConnection.getInstance().getConnection();
-        new EtudiantDAO(conn).insert(e);
-
-        // Ajouter en mémoire
-        etudiants.add(e);
-        return e;
-    }
-        etudiants.add(e);
-    }
-
     public List<Etudiant> getEtudiants() { return etudiants; }
 
     public boolean numeroExisteDeja(String numero) {
@@ -71,12 +46,22 @@ public class EtudiantService {
         return false;
     }
 
-    public Etudiant ajouterEtudiant(String numero, String nom, String prenom) {
-        if (numero == null || numero.isBlank()) throw new IllegalArgumentException("Numero etudiant obligatoire");
+    // VERSION CORRIGÉE : Utilise les paramètres et gère la base de données
+    public Etudiant ajouterEtudiant(String numero, String nom, String prenom) throws SQLException {
+        if (numero == null || numero.isBlank()) throw new IllegalArgumentException("Numéro étudiant obligatoire");
         if (nom == null || nom.isBlank()) throw new IllegalArgumentException("Nom obligatoire");
-        if (prenom == null || prenom.isBlank()) throw new IllegalArgumentException("Prenom obligatoire");
-        if (numeroExisteDeja(numero)) throw new IllegalArgumentException("Numero etudiant deja utilise : " + numero);
-        Etudiant e = new Etudiant(numero.trim(), nom.trim(), prenom.trim());
+        if (prenom == null || prenom.isBlank()) throw new IllegalArgumentException("Prénom obligatoire");
+
+        String num = numero.trim();
+        if (numeroExisteDeja(num)) throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
+
+        Etudiant e = new Etudiant(num, nom.trim(), prenom.trim());
+
+        // 1. Persister en base de données
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        new EtudiantDAO(conn).insert(e);
+
+        // 2. Ajouter en mémoire pour l'affichage
         etudiants.add(e);
         return e;
     }
@@ -84,7 +69,7 @@ public class EtudiantService {
     public boolean supprimerEtudiant(String numero) throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         new EtudiantDAO(conn).delete(numero);
-        etudiants.removeIf(e -> e.getNumero().equals(numero));
+        return etudiants.removeIf(e -> e.getNumero().equals(numero));
     }
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
@@ -95,13 +80,21 @@ public class EtudiantService {
     }
 
     public boolean inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) throws SQLException {
-        if (!peutSInscrire(etudiant, ue)) return false;
+        if (!peutSInscrire(etudiant, ue)) {
+            throw new IllegalArgumentException("Inscription impossible : prérequis non validés.");
+        }
 
-        // Persister en base
+        // --- TA LOGIQUE DE LIMITE ECTS ---
+        int ectsActuels = etudiant.calculerECTSParSemestre(annee, semestre);
+        if (ectsActuels + ue.getEcts() > 30) {
+            throw new IllegalArgumentException("Limite d'ECTS dépassée (Maximum 30 ECTS).");
+        }
+
+        // 1. Persister en base de données
         Connection conn = DatabaseConnection.getInstance().getConnection();
         new InscriptionDAO(conn).inscrire(etudiant, ue, annee, semestre);
 
-        // Mettre à jour en mémoire
+        // 2. Mettre à jour en mémoire
         etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
         return true;
     }
@@ -113,62 +106,32 @@ public class EtudiantService {
     public void passerAuSemestreSuivant() {
         if (semestreCourant == Semestre.IMPAIR) {
             semestreCourant = Semestre.PAIR;
-            // Recharge les inscriptions du semestre PAIR
-            for (Etudiant e : etudiants) {
-                e.getInscriptions().clear();
-            }
-            CsvLoader.chargerInscriptionsFichier(this, "/data/inscriptions_pair.csv");
         } else {
             semestreCourant = Semestre.IMPAIR;
             String[] parts = anneeCourante.split("-");
             int debut = Integer.parseInt(parts[0]) + 1;
             int fin = Integer.parseInt(parts[1]) + 1;
             anneeCourante = debut + "-" + fin;
-            // Recharge les inscriptions du semestre IMPAIR
-            for (Etudiant e : etudiants) {
-                e.getInscriptions().clear();
-            }
-            CsvLoader.chargerInscriptionsFichier(this, "/data/inscriptions.csv");
         }
+        // Note: Ici, il faudra plus tard recharger les données depuis la DB au lieu du CSV
     }
 
     public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) throws SQLException {
-        // Trouver l'inscription en mémoire (sur le semestre courant)
         for (Inscription ins : etudiant.getInscriptions()) {
             if (ins.getUe().equals(ue)
                     && ins.getAnneeUniversitaire().equals(anneeCourante)
                     && ins.getSemestre() == semestreCourant) {
 
-                // Persister en base
+                // 1. Persister en base de données
                 Connection conn = DatabaseConnection.getInstance().getConnection();
                 new InscriptionDAO(conn).mettreAJourResultat(
                         etudiant, ue, anneeCourante, semestreCourant, valide);
 
-                // Mettre à jour en mémoire
+                // 2. Mettre à jour en mémoire
                 ins.setValide(valide);
                 return true;
             }
         }
         return false;
-    }
-
-    public void chargerDepuisBDD() throws SQLException {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-
-            // 1. Charger les UE (avec prérequis)
-            UEDAO uedao = new UEDAO(conn);
-            ues.clear();
-            ues.addAll(uedao.findAll());
-
-            // 2. Charger les étudiants (avec inscriptions)
-            EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
-            etudiants.clear();
-            etudiants.addAll(etudiantDAO.findAll(ues));
-        }
-public void modifierEtudiant(Etudiant etudiant) throws SQLException {
-    Connection conn = DatabaseConnection.getInstance().getConnection();
-    new EtudiantDAO(conn).update(etudiant);
-    // L'objet en mémoire a déjà été modifié via ses setters
-}
     }
 }

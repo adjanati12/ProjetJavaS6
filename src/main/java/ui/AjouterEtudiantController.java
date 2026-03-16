@@ -36,10 +36,19 @@ public class AjouterEtudiantController {
             return;
         }
 
-        Etudiant e = new Etudiant(numero, nom, prenom);
-        service.ajouterEtudiant(e);
-        accueilController.rafraichirListe();
-        fermer();
+        try {
+            // CORRECTION ICI : On passe les 3 Strings directement
+            service.ajouterEtudiant(numero, nom, prenom);
+
+            accueilController.rafraichirListe();
+            fermer();
+        } catch (IllegalArgumentException e) {
+            // Erreur métier (ex: numéro déjà utilisé)
+            messageErreur.setText(e.getMessage());
+        } catch (java.sql.SQLException e) {
+            // Erreur technique de base de données
+            messageErreur.setText("Erreur base de données : " + e.getMessage());
+        }
     }
 
     @FXML

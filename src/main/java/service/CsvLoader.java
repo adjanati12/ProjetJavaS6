@@ -1,10 +1,10 @@
 package service;
 
 import model.*;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 
 /**
  * Service de chargement des données depuis les fichiers CSV.
@@ -46,7 +46,8 @@ public class CsvLoader {
                     String nom = parts[1].trim();
                     String prenom = parts[2].trim();
                     if (!service.numeroExisteDeja(numero)) {
-                        service.ajouterEtudiant(new Etudiant(numero, nom, prenom));
+                        // CORRECTION : On passe les 3 String directement au service
+                        service.ajouterEtudiant(numero, nom, prenom);
                     }
                 }
             }
