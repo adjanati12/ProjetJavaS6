@@ -7,6 +7,8 @@ import model.Etudiant;
 import model.UE;
 import service.EtudiantService;
 
+import java.sql.SQLException;
+
 /**
  * Contrôleur de la fenêtre d'inscription d'un étudiant à une UE.
  */
@@ -40,7 +42,7 @@ public class InscriptionController {
      * Inscrit l'étudiant à l'UE sélectionnée.
      */
     @FXML
-    public void inscrire() {
+    public void inscrire() throws SQLException {
         UE ue = comboUE.getSelectionModel().getSelectedItem();
         if (ue == null) {
             messageErreur.setText("Veuillez sélectionner une UE.");

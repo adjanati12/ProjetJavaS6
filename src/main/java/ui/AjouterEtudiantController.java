@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import model.Etudiant;
 import service.EtudiantService;
 
+import java.sql.SQLException;
+
 public class AjouterEtudiantController {
 
     @FXML private TextField champNumero;
@@ -26,7 +28,7 @@ public class AjouterEtudiantController {
     }
 
     @FXML
-    public void ajouter() {
+    public void ajouter() throws SQLException {
         String numero = champNumero.getText().trim();
         String nom = champNom.getText().trim();
         String prenom = champPrenom.getText().trim();

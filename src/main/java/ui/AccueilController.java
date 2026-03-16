@@ -105,7 +105,7 @@ public class AccueilController {
     }
 
     @FXML
-    public void supprimerEtudiant() {
+    public void supprimerEtudiant() throws SQLException {
         int index = listeEtudiants.getSelectionModel().getSelectedIndex();
         if (index < 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
