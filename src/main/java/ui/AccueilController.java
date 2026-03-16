@@ -14,6 +14,7 @@ import model.Etudiant;
 import service.CsvLoader;
 import service.EtudiantService;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class AccueilController {
@@ -25,9 +26,15 @@ public class AccueilController {
 
     @FXML
     public void initialize() {
-        CsvLoader.chargerUEs(service);
-        CsvLoader.chargerEtudiants(service);
-        CsvLoader.chargerInscriptions(service);
+        try {
+            service.chargerDepuisBDD();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de connexion");
+            alert.setContentText("Impossible de se connecter à la base de données.");
+            alert.showAndWait();
+        }
 
         rafraichirListe();
         mettreAJourLabelSemestre();

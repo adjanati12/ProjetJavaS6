@@ -1,6 +1,12 @@
 package service;
 
+import dao.DatabaseConnection;
 import model.*;
+import dao.EtudiantDAO;
+import dao.InscriptionDAO;
+import dao.UEDAO;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +36,28 @@ public class EtudiantService {
         return null;
     }
 
-    public void ajouterEtudiant(Etudiant e) {
+    public void ajouterEtudiant(Etudiant e) throws SQLException {
+        if (numero == null || numero.isBlank())
+            throw new IllegalArgumentException("Numéro étudiant obligatoire");
+        if (nom == null || nom.isBlank())
+            throw new IllegalArgumentException("Nom obligatoire");
+        if (prenom == null || prenom.isBlank())
+            throw new IllegalArgumentException("Prénom obligatoire");
+
+        String num = numero.trim();
+        if (numeroExisteDeja(num))
+            throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
+
+        Etudiant e = new Etudiant(num, nom.trim(), prenom.trim());
+
+        // Persister en base
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        new EtudiantDAO(conn).insert(e);
+
+        // Ajouter en mémoire
+        etudiants.add(e);
+        return e;
+    }
         etudiants.add(e);
     }
 
@@ -54,8 +81,10 @@ public class EtudiantService {
         return e;
     }
 
-    public boolean supprimerEtudiant(String numero) {
-        return etudiants.removeIf(e -> e.getNumero().equals(numero));
+    public boolean supprimerEtudiant(String numero) throws SQLException {
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        new EtudiantDAO(conn).delete(numero);
+        etudiants.removeIf(e -> e.getNumero().equals(numero));
     }
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
@@ -65,12 +94,16 @@ public class EtudiantService {
         return true;
     }
 
-    public boolean inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) {
-        if (peutSInscrire(etudiant, ue)) {
-            etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
-            return true;
-        }
-        return false;
+    public boolean inscrire(Etudiant etudiant, UE ue, String annee, Semestre semestre) throws SQLException {
+        if (!peutSInscrire(etudiant, ue)) return false;
+
+        // Persister en base
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        new InscriptionDAO(conn).inscrire(etudiant, ue, annee, semestre);
+
+        // Mettre à jour en mémoire
+        etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
+        return true;
     }
 
     public String getAnneeCourante() { return anneeCourante; }
@@ -99,13 +132,43 @@ public class EtudiantService {
         }
     }
 
-    public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) {
+    public boolean marquerResultat(Etudiant etudiant, UE ue, boolean valide) throws SQLException {
+        // Trouver l'inscription en mémoire (sur le semestre courant)
         for (Inscription ins : etudiant.getInscriptions()) {
-            if (ins.getUe().equals(ue)) {
+            if (ins.getUe().equals(ue)
+                    && ins.getAnneeUniversitaire().equals(anneeCourante)
+                    && ins.getSemestre() == semestreCourant) {
+
+                // Persister en base
+                Connection conn = DatabaseConnection.getInstance().getConnection();
+                new InscriptionDAO(conn).mettreAJourResultat(
+                        etudiant, ue, anneeCourante, semestreCourant, valide);
+
+                // Mettre à jour en mémoire
                 ins.setValide(valide);
                 return true;
             }
         }
         return false;
+    }
+
+    public void chargerDepuisBDD() throws SQLException {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+
+            // 1. Charger les UE (avec prérequis)
+            UEDAO uedao = new UEDAO(conn);
+            ues.clear();
+            ues.addAll(uedao.findAll());
+
+            // 2. Charger les étudiants (avec inscriptions)
+            EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
+            etudiants.clear();
+            etudiants.addAll(etudiantDAO.findAll(ues));
+        }
+public void modifierEtudiant(Etudiant etudiant) throws SQLException {
+    Connection conn = DatabaseConnection.getInstance().getConnection();
+    new EtudiantDAO(conn).update(etudiant);
+    // L'objet en mémoire a déjà été modifié via ses setters
+}
     }
 }
