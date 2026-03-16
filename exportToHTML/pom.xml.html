@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>pom.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #e8bf6a;}
+.s1 { color: #50fa7b;}
+.s2 { color: #ff79c6;}
+.s3 { color: #f1fa8c;}
+.s4 { color: #f8f8f2;}
+</style>
+</head>
+<body bgcolor="#282a36">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+pom.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s3">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s3">=&quot;UTF-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s2">&lt;project </span><span class="s1">xmlns</span><span class="s3">=&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
+         <span class="s1">xmlns:xsi</span><span class="s3">=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+         <span class="s1">xsi:schemaLocation</span><span class="s3">=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="s2">&gt;</span>
+    <span class="s2">&lt;modelVersion&gt;</span><span class="s4">4.0.0</span><span class="s2">&lt;/modelVersion&gt;</span>
+
+    <span class="s2">&lt;groupId&gt;</span><span class="s4">fr.univ.miage</span><span class="s2">&lt;/groupId&gt;</span>
+    <span class="s2">&lt;artifactId&gt;</span><span class="s4">suivi-etudiants</span><span class="s2">&lt;/artifactId&gt;</span>
+    <span class="s2">&lt;version&gt;</span><span class="s4">1.0-SNAPSHOT</span><span class="s2">&lt;/version&gt;</span>
+
+    <span class="s2">&lt;properties&gt;</span>
+        <span class="s2">&lt;maven.compiler.source&gt;</span><span class="s4">21</span><span class="s2">&lt;/maven.compiler.source&gt;</span>
+        <span class="s2">&lt;maven.compiler.target&gt;</span><span class="s4">21</span><span class="s2">&lt;/maven.compiler.target&gt;</span>
+        <span class="s2">&lt;javafx.version&gt;</span><span class="s4">21.0.2</span><span class="s2">&lt;/javafx.version&gt;</span>
+    <span class="s2">&lt;/properties&gt;</span>
+
+    <span class="s2">&lt;dependencies&gt;</span>
+        <span class="s2">&lt;dependency&gt;</span>
+            <span class="s2">&lt;groupId&gt;</span><span class="s4">org.openjfx</span><span class="s2">&lt;/groupId&gt;</span>
+            <span class="s2">&lt;artifactId&gt;</span><span class="s4">javafx-controls</span><span class="s2">&lt;/artifactId&gt;</span>
+            <span class="s2">&lt;version&gt;</span><span class="s4">${javafx.version}</span><span class="s2">&lt;/version&gt;</span>
+        <span class="s2">&lt;/dependency&gt;</span>
+        <span class="s2">&lt;dependency&gt;</span>
+            <span class="s2">&lt;groupId&gt;</span><span class="s4">org.openjfx</span><span class="s2">&lt;/groupId&gt;</span>
+            <span class="s2">&lt;artifactId&gt;</span><span class="s4">javafx-fxml</span><span class="s2">&lt;/artifactId&gt;</span>
+            <span class="s2">&lt;version&gt;</span><span class="s4">${javafx.version}</span><span class="s2">&lt;/version&gt;</span>
+        <span class="s2">&lt;/dependency&gt;</span>
+        <span class="s2">&lt;dependency&gt;</span>
+            <span class="s2">&lt;groupId&gt;</span><span class="s4">org.openjfx</span><span class="s2">&lt;/groupId&gt;</span>
+            <span class="s2">&lt;artifactId&gt;</span><span class="s4">javafx-graphics</span><span class="s2">&lt;/artifactId&gt;</span>
+            <span class="s2">&lt;version&gt;</span><span class="s4">${javafx.version}</span><span class="s2">&lt;/version&gt;</span>
+        <span class="s2">&lt;/dependency&gt;</span>
+        <span class="s2">&lt;dependency&gt;</span>
+            <span class="s2">&lt;groupId&gt;</span><span class="s4">org.openjfx</span><span class="s2">&lt;/groupId&gt;</span>
+            <span class="s2">&lt;artifactId&gt;</span><span class="s4">javafx-base</span><span class="s2">&lt;/artifactId&gt;</span>
+            <span class="s2">&lt;version&gt;</span><span class="s4">${javafx.version}</span><span class="s2">&lt;/version&gt;</span>
+        <span class="s2">&lt;/dependency&gt;</span>
+    <span class="s2">&lt;/dependencies&gt;</span>
+
+    <span class="s2">&lt;build&gt;</span>
+        <span class="s2">&lt;plugins&gt;</span>
+            <span class="s2">&lt;plugin&gt;</span>
+                <span class="s2">&lt;groupId&gt;</span><span class="s4">org.openjfx</span><span class="s2">&lt;/groupId&gt;</span>
+                <span class="s2">&lt;artifactId&gt;</span><span class="s4">javafx-maven-plugin</span><span class="s2">&lt;/artifactId&gt;</span>
+                <span class="s2">&lt;version&gt;</span><span class="s4">0.0.8</span><span class="s2">&lt;/version&gt;</span>
+                <span class="s2">&lt;configuration&gt;</span>
+                    <span class="s2">&lt;mainClass&gt;</span><span class="s4">fr.univ.miage.Main</span><span class="s2">&lt;/mainClass&gt;</span>
+                <span class="s2">&lt;/configuration&gt;</span>
+            <span class="s2">&lt;/plugin&gt;</span>
+        <span class="s2">&lt;/plugins&gt;</span>
+    <span class="s2">&lt;/build&gt;</span>
+<span class="s2">&lt;/project&gt;</span>
+</pre>
+</body>
+</html>
