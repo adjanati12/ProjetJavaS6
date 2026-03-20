@@ -1,24 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <VBox spacing="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ui.AjouterEtudiantController"
-      style="-fx-padding: 20; -fx-background-color: white;">
-    <Label text="Ajouter un étudiant" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+      style="-fx-padding: 25; -fx-background-color: white;" prefWidth="400">
+
+    <Label text="Ajouter un etudiant"
+           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
     <Separator/>
-    <GridPane hgap="10" vgap="10">
-        <Label text="Numéro :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="champNumero" promptText="ex: 12345" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-        <Label text="Nom :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="champNom" promptText="ex: Dupont" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-        <Label text="Prénom :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="champPrenom" promptText="ex: Marie" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <GridPane hgap="15" vgap="12">
+        <Label text="Numero *" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="champNumero" promptText="ex: 23011"
+                   prefWidth="220"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Nom *" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="champNom" promptText="ex: Dupont"
+                   prefWidth="220"
+                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Prenom *" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="champPrenom" promptText="ex: Marie"
+                   prefWidth="220"
+                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Mention *" GridPane.rowIndex="3" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="comboMention" promptText="Choisir une mention"
+                  prefWidth="220"
+                  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Parcours *" GridPane.rowIndex="4" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="comboParcours" promptText="Choisir un parcours"
+                  prefWidth="220"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
     </GridPane>
-    <Label fx:id="messageErreur" style="-fx-text-fill: red;"/>
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Annuler" onAction="#annuler"/>
-        <Button text="Ajouter" onAction="#ajouter" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+
+    <Label fx:id="messageErreur" style="-fx-text-fill: red; -fx-font-size: 12;"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button text="Annuler" onAction="#annuler"
+                style="-fx-background-color: #757575; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
+        <Button text="Ajouter" onAction="#ajouter"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
     </HBox>
+
 </VBox>
