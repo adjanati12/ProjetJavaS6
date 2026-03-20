@@ -14,64 +14,26 @@ import model.Etudiant;
 import service.CsvLoader;
 import service.EtudiantService;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Contrôleur de l'écran d'accueil.
+ */
 public class AccueilController {
 
     @FXML private ListView<String> listeEtudiants;
     @FXML private Label labelSemestre;
 
     private EtudiantService service = new EtudiantService();
-    private void ouvrirDetails() {
-        // 1. On récupère l'index sélectionné dans la liste
-        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
 
-        // 2. Si rien n'est sélectionné, on ne fait rien
-        if (index < 0) return;
-
-        // 3. On récupère l'objet Etudiant correspondant
-        Etudiant etudiant = service.getEtudiants().get(index);
-
-        try {
-            // 4. On charge la nouvelle fenêtre (le fichier FXML)
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/detailEtudiant.fxml"));
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Détails - " + etudiant.getNomComplet());
-            stage.setScene(new Scene(loader.load(), 400, 400));
-
-            // 5. On passe l'étudiant au contrôleur de la fenêtre de détails
-            DetailEtudiantController ctrl = loader.getController();
-            ctrl.setEtudiant(etudiant, service);
-
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Impossible d'ouvrir la fenêtre de détails : " + e.getMessage());
-            alert.showAndWait();
-        }
-    }
     @FXML
     public void initialize() {
-        try {
-            // 1. Charger les UEs depuis le CSV
-            CsvLoader.chargerUEs(service);
+        CsvLoader.chargerMentions(service);
+        CsvLoader.chargerUEs(service);
+        CsvLoader.chargerParcours(service);
+        CsvLoader.chargerEtudiants(service);
+        CsvLoader.chargerInscriptions(service);
 
-            // 2. Charger les étudiants (Importation CSV -> Base de données)
-            // C'est ici que Bakhoum, Djanati, etc. sont récupérés
-            CsvLoader.chargerEtudiants(service);
-
-            // 3. Charger les inscriptions
-            CsvLoader.chargerInscriptions(service);
-
-        } catch (Exception e) {
-            System.err.println("Erreur lors du chargement initial : " + e.getMessage());
-            // Si tu as une erreur "Table ETUDIANT not found", c'est ici qu'elle s'affichera
-        }
-
-        // 4. Rafraîchir l'affichage
         rafraichirListe();
         mettreAJourLabelSemestre();
 
@@ -82,15 +44,12 @@ public class AccueilController {
         });
     }
 
-
-
+    /** Met à jour le label affichant l'année et le semestre courant */
     private void mettreAJourLabelSemestre() {
         labelSemestre.setText(service.getAnneeCourante() + " - Semestre " + service.getSemestreCourant());
     }
 
-<<<<<<< HEAD
-    // ... (le reste de tes méthodes ouvrirDetails, supprimerEtudiant, etc. sont correctes)
-=======
+    /** Ouvre la fenêtre de détails pour l'étudiant sélectionné */
     private void ouvrirDetails() {
         int index = listeEtudiants.getSelectionModel().getSelectedIndex();
         if (index < 0) return;
@@ -109,6 +68,7 @@ public class AccueilController {
         }
     }
 
+    /** Ouvre le formulaire de modification pour l'étudiant sélectionné */
     @FXML
     public void ouvrirFormulaireModification() {
         int index = listeEtudiants.getSelectionModel().getSelectedIndex();
@@ -133,6 +93,7 @@ public class AccueilController {
         }
     }
 
+    /** Passe au semestre suivant après confirmation */
     @FXML
     public void passerSemestreSuivant() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
@@ -145,8 +106,9 @@ public class AccueilController {
         }
     }
 
+    /** Supprime l'étudiant sélectionné après confirmation */
     @FXML
-    public void supprimerEtudiant() throws SQLException {
+    public void supprimerEtudiant() {
         int index = listeEtudiants.getSelectionModel().getSelectedIndex();
         if (index < 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -165,6 +127,7 @@ public class AccueilController {
         }
     }
 
+    /** Ouvre le formulaire d'ajout d'un étudiant */
     @FXML
     public void ouvrirFormulaireAjout() {
         try {
@@ -181,18 +144,16 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
->>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
 
+    /** Rafraîchit la liste des étudiants affichée */
     public void rafraichirListe() {
         listeEtudiants.getItems().clear();
-        if (service.getEtudiants().isEmpty()) {
-            System.out.println("La liste des étudiants est vide dans le service.");
-        }
         for (Etudiant e : service.getEtudiants()) {
             listeEtudiants.getItems().add(e.getNumero() + " - " + e.getNomComplet());
         }
     }
 
+    /** @return le service étudiant */
     public EtudiantService getService() {
         return service;
     }
