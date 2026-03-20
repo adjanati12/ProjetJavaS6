@@ -199,7 +199,7 @@ public class AccueilController {
     /** Rafraîchit le tableau et les statistiques */
     public void rafraichirListe() {
         tableEtudiants.getItems().setAll(service.getEtudiants());
-        labelNbResultats.setText(service.getEtudiants().size() + " étudiant(s) trouvé(s)");
+        labelNbResultats.setText(service.getEtudiants().size() + " etudiant(s) trouve(s)");
         mettreAJourStats();
     }
 
