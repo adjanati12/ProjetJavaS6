@@ -36,6 +36,32 @@ public class EtudiantService {
         return null;
     }
 
+<<<<<<< HEAD
+=======
+    public Etudiant ajouterEtudiant(Etudiant e) throws SQLException {
+        if (e.getNumero() == null || e.getNumero().isBlank())
+            throw new IllegalArgumentException("Numéro étudiant obligatoire");
+
+        if (e.getNom() == null || e.getNom().isBlank())
+            throw new IllegalArgumentException("Nom obligatoire");
+
+        if (e.getPrenom() == null || e.getPrenom().isBlank())
+            throw new IllegalArgumentException("Prénom obligatoire");
+
+        String num = e.getNumero().trim();
+        if (numeroExisteDeja(num))
+            throw new IllegalArgumentException("Numéro étudiant déjà utilisé : " + num);
+
+        // Persister en base
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        new EtudiantDAO(conn).insert(e);
+
+        // Ajouter en mémoire
+        etudiants.add(e);
+        return e;
+    }
+
+>>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
     public List<Etudiant> getEtudiants() { return etudiants; }
 
     public boolean numeroExisteDeja(String numero) {
@@ -70,6 +96,10 @@ public class EtudiantService {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         new EtudiantDAO(conn).delete(numero);
         return etudiants.removeIf(e -> e.getNumero().equals(numero));
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
     }
 
     public boolean peutSInscrire(Etudiant etudiant, UE ue) {
@@ -134,4 +164,28 @@ public class EtudiantService {
         }
         return false;
     }
+<<<<<<< HEAD
 }
+=======
+
+    public void chargerDepuisBDD() throws SQLException {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+
+            // 1. Charger les UE (avec prérequis)
+            UEDAO uedao = new UEDAO(conn);
+            ues.clear();
+            ues.addAll(uedao.findAll());
+
+            // 2. Charger les étudiants (avec inscriptions)
+            EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
+            etudiants.clear();
+            etudiants.addAll(etudiantDAO.findAll(ues));
+        }
+public void modifierEtudiant(Etudiant etudiant) throws SQLException {
+    Connection conn = DatabaseConnection.getInstance().getConnection();
+    new EtudiantDAO(conn).update(etudiant);
+    // L'objet en mémoire a déjà été modifié via ses setters
+}
+    }
+
+>>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349

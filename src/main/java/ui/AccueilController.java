@@ -88,7 +88,100 @@ public class AccueilController {
         labelSemestre.setText(service.getAnneeCourante() + " - Semestre " + service.getSemestreCourant());
     }
 
+<<<<<<< HEAD
     // ... (le reste de tes méthodes ouvrirDetails, supprimerEtudiant, etc. sont correctes)
+=======
+    private void ouvrirDetails() {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) return;
+        Etudiant etudiant = service.getEtudiants().get(index);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/detailEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Détails - " + etudiant.getNomComplet());
+            stage.setScene(new Scene(loader.load(), 400, 400));
+            DetailEtudiantController ctrl = loader.getController();
+            ctrl.setEtudiant(etudiant, service);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void ouvrirFormulaireModification() {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Veuillez sélectionner un étudiant à modifier.");
+            alert.showAndWait();
+            return;
+        }
+        Etudiant etudiant = service.getEtudiants().get(index);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Modifier - " + etudiant.getNomComplet());
+            stage.setScene(new Scene(loader.load()));
+            ModifierEtudiantController ctrl = loader.getController();
+            ctrl.setEtudiant(etudiant, this);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void passerSemestreSuivant() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Semestre suivant");
+        confirm.setContentText("Passer au semestre suivant ? Cette action est irréversible.");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.passerAuSemestreSuivant();
+            mettreAJourLabelSemestre();
+        }
+    }
+
+    @FXML
+    public void supprimerEtudiant() throws SQLException {
+        int index = listeEtudiants.getSelectionModel().getSelectedIndex();
+        if (index < 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Veuillez sélectionner un étudiant à supprimer.");
+            alert.showAndWait();
+            return;
+        }
+        Etudiant etudiant = service.getEtudiants().get(index);
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmation");
+        confirm.setContentText("Supprimer " + etudiant.getNomComplet() + " ?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.supprimerEtudiant(etudiant.getNumero());
+            rafraichirListe();
+        }
+    }
+
+    @FXML
+    public void ouvrirFormulaireAjout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterEtudiant.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Ajouter un étudiant");
+            stage.setScene(new Scene(loader.load()));
+            AjouterEtudiantController ctrl = loader.getController();
+            ctrl.setService(service);
+            ctrl.setAccueilController(this);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+>>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
 
     public void rafraichirListe() {
         listeEtudiants.getItems().clear();
