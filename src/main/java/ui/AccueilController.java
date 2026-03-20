@@ -335,6 +335,22 @@ public class AccueilController {
             System.out.println("ERREUR : " + e.getMessage());
         }
     }
+    /** Ouvre l'ecran UE et Formations */
+    @FXML
+    public void ouvrirUEFormations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ueFormations.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("UE et Formations");
+            stage.setScene(new Scene(loader.load(), 800, 500));
+            UEFormationsController ctrl = loader.getController();
+            ctrl.setService(service);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /** @return le service étudiant */
     public EtudiantService getService() {

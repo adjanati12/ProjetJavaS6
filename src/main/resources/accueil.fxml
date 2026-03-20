@@ -97,5 +97,10 @@
                 prefHeight="35"
                 style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13;
                    -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="UE / Formations" onAction="#ouvrirUEFormations"
+        prefHeight="35"
+        style="-fx-background-color: #00897B; -fx-text-fill: white; -fx-font-size: 13;
+        -fx-font-weight: bold; -fx-background-radius: 5;"/>
     </HBox>
+
     </VBox>
