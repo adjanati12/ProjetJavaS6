@@ -4,11 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Etudiant;
 import service.EtudiantService;
 
-import java.sql.SQLException;
-
+/**
+ * Contrôleur du formulaire d'ajout d'un étudiant.
+ */
 public class AjouterEtudiantController {
 
     @FXML private TextField champNumero;
@@ -19,37 +19,31 @@ public class AjouterEtudiantController {
     private EtudiantService service;
     private AccueilController accueilController;
 
+    /** @param service le service étudiant */
     public void setService(EtudiantService service) {
         this.service = service;
     }
 
+    /** @param accueilController le contrôleur de l'écran d'accueil */
     public void setAccueilController(AccueilController accueilController) {
         this.accueilController = accueilController;
     }
 
+    /**
+     * Valide et ajoute l'étudiant via le service (vérifie les doublons et champs vides).
+     */
     @FXML
-    public void ajouter() throws SQLException {
+    public void ajouter() {
         String numero = champNumero.getText().trim();
         String nom = champNom.getText().trim();
         String prenom = champPrenom.getText().trim();
 
-        if (numero.isEmpty() || nom.isEmpty() || prenom.isEmpty()) {
-            messageErreur.setText("Tous les champs sont obligatoires.");
-            return;
-        }
-
         try {
-            // CORRECTION ICI : On passe les 3 Strings directement
             service.ajouterEtudiant(numero, nom, prenom);
-
             accueilController.rafraichirListe();
             fermer();
         } catch (IllegalArgumentException e) {
-            // Erreur métier (ex: numéro déjà utilisé)
             messageErreur.setText(e.getMessage());
-        } catch (java.sql.SQLException e) {
-            // Erreur technique de base de données
-            messageErreur.setText("Erreur base de données : " + e.getMessage());
         }
     }
 

@@ -1,20 +1,23 @@
 package dao;
 
+import model.Mention;
 import model.UE;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-  DAO (Data Access Object) pour les Unités d'Enseignement.
-  Fournit les opérations CRUD sur la table UE et UE_PREREQUIS.
+/**
+ * DAO pour les Unités d'Enseignement.
+ * Fournit les opérations CRUD sur la table UE et UE_PREREQUIS.
  */
 public class UEDAO {
 
     private final Connection connection;
 
-     // @param connection connexion JDBC active
+    /**
+     * @param connection connexion JDBC active
+     */
     public UEDAO(Connection connection) {
         this.connection = connection;
     }
@@ -27,7 +30,7 @@ public class UEDAO {
     public List<UE> findAll() throws SQLException {
         List<UE> ues = new ArrayList<>();
 
-        //Charger toutes les UE
+        // Charger toutes les UE (mention null pour l'instant = UE d'ouverture par défaut)
         String sql = "SELECT code, nom, ects FROM UE ORDER BY code";
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -35,7 +38,8 @@ public class UEDAO {
                 ues.add(new UE(
                         rs.getString("code"),
                         rs.getString("nom"),
-                        rs.getInt("ects")
+                        rs.getInt("ects"),
+                        null // mention chargée séparément si besoin
                 ));
             }
         }
@@ -48,7 +52,6 @@ public class UEDAO {
                 String codeUE  = rs.getString("code_ue");
                 String codePre = rs.getString("code_prerequis");
 
-                // Trouver les objets UE correspondants dans la liste
                 UE ue  = findInList(ues, codeUE);
                 UE pre = findInList(ues, codePre);
                 if (ue != null && pre != null) {
@@ -62,7 +65,7 @@ public class UEDAO {
 
     /**
      * Trouve une UE par son code dans une liste.
-     * @param ues  liste de UE
+     * @param ues liste de UE
      * @param code code recherché
      * @return la UE trouvée, ou null
      */

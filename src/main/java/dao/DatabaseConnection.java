@@ -1,11 +1,14 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Connexion à la base de données Oracle (non utilisée pour l'instant).
+ */
 public class DatabaseConnection {
+
     private static DatabaseConnection instance;
     private Connection connection;
 
@@ -13,14 +16,14 @@ public class DatabaseConnection {
     private static final String USER     = "DJW5221A";
     private static final String PASSWORD = "Beomgyu2005.";
 
-<<<<<<< HEAD
-    public static DatabaseMetaData getInstance() {
-        return null;
-=======
     private DatabaseConnection() throws SQLException {
         connection = DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
+    /**
+     * @return l'instance unique de la connexion
+     * @throws SQLException si la connexion échoue
+     */
     public static DatabaseConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new DatabaseConnection();
@@ -28,8 +31,8 @@ public class DatabaseConnection {
         return instance;
     }
 
+    /** @return la connexion active */
     public Connection getConnection() {
         return connection;
->>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
     }
 }

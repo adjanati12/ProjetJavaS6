@@ -1,4 +1,5 @@
 package ui;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -6,8 +7,6 @@ import javafx.stage.Stage;
 import model.Etudiant;
 import model.UE;
 import service.EtudiantService;
-
-import java.sql.SQLException;
 
 /**
  * Contrôleur de la fenêtre d'inscription d'un étudiant à une UE.
@@ -32,7 +31,8 @@ public class InscriptionController {
         this.service = service;
         this.detailController = detailController;
 
-        comboUE.getItems().addAll(service.getUes());
+        // Afficher seulement les UE disponibles (prérequis OK)
+        comboUE.getItems().addAll(service.getUesDisponibles(etudiant));
         if (!comboUE.getItems().isEmpty()) {
             comboUE.getSelectionModel().selectFirst();
         }
@@ -42,40 +42,23 @@ public class InscriptionController {
      * Inscrit l'étudiant à l'UE sélectionnée.
      */
     @FXML
-<<<<<<< HEAD
-    /**
-     * Inscrit l'étudiant à l'UE sélectionnée.
-     */
     public void inscrire() {
-=======
-    public void inscrire() throws SQLException {
->>>>>>> 2c3b101d9db5ee65f261e2625f82b0a4a2d8b349
         UE ue = comboUE.getSelectionModel().getSelectedItem();
         if (ue == null) {
             messageErreur.setText("Veuillez sélectionner une UE.");
             return;
         }
 
-        try {
-            // On tente l'inscription
-            // Cette méthode lance une exception si > 30 ECTS ou si erreur SQL
-            service.inscrire(etudiant, ue, service.getAnneeCourante(), service.getSemestreCourant());
-
-            // Si on arrive ici, c'est que ça a marché !
+        boolean ok = service.inscrire(etudiant, ue, service.getAnneeCourante(), service.getSemestreCourant());
+        if (ok) {
             detailController.rafraichirInscriptions();
             fermer();
-
-        } catch (IllegalArgumentException e) {
-            // ICI : On récupère tes messages : "Limite d'ECTS dépassée" ou "Prérequis non validés"
-            messageErreur.setText(e.getMessage());
-            messageErreur.setStyle("-fx-text-fill: red;"); // Optionnel : mettre en rouge
-
-        } catch (java.sql.SQLException e) {
-            // ICI : Erreur technique de base de données
-            messageErreur.setText("Erreur DB : " + e.getMessage());
-            e.printStackTrace();
+        } else {
+            messageErreur.setText("Inscription impossible : prérequis non validés.");
+            messageErreur.setStyle("-fx-text-fill: red;");
         }
     }
+
     /**
      * Ferme la fenêtre sans inscrire.
      */
@@ -84,6 +67,9 @@ public class InscriptionController {
         fermer();
     }
 
+    /**
+     * Ferme la fenêtre courante.
+     */
     private void fermer() {
         ((Stage) comboUE.getScene().getWindow()).close();
     }
