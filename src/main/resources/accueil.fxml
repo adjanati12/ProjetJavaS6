@@ -38,7 +38,7 @@
     <HBox spacing="12" alignment="CENTER_LEFT"
           style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8;
                  -fx-border-color: #e0e0e0; -fx-border-radius: 8;">
-        <Label text="🔍 Filtres :" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+        <Label text="Filtres :" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
         <ComboBox fx:id="filtresMention" promptText="Toutes les mentions"
                   prefWidth="180" style="-fx-font-size: 12;"/>
         <ComboBox fx:id="filtresParcours" promptText="Tous les parcours"
@@ -80,16 +80,16 @@
 
     <!-- BOUTONS BAS -->
     <HBox spacing="12" style="-fx-padding: 12 0 0 0;">
-        <Button text="✏️ Modifier" onAction="#ouvrirFormulaireModification"
+        <Button text="Modifier" onAction="#ouvrirFormulaireModification"
                 prefHeight="35" prefWidth="120"
                 style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13;
                        -fx-font-weight: bold; -fx-background-radius: 5;"/>
-        <Button text="🗑️ Supprimer" onAction="#supprimerEtudiant"
+        <Button text="supprimer" onAction="#supprimerEtudiant"
                 prefHeight="35" prefWidth="120"
                 style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 13;
                        -fx-font-weight: bold; -fx-background-radius: 5;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="⏭️ Semestre suivant" onAction="#passerSemestreSuivant"
+        <Button text=" Semestre suivant" onAction="#passerSemestreSuivant"
                 prefHeight="35"
                 style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13;
                        -fx-font-weight: bold; -fx-background-radius: 5;"/>
