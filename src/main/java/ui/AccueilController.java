@@ -316,6 +316,25 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
+    /** Ouvre l'ecran de saisie des resultats */
+
+    @FXML
+    public void ouvrirSaisieResultats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/saisieResultats.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Saisie des resultats");
+            stage.setScene(new Scene(loader.load(), 900, 600));
+            SaisieResultatController ctrl = loader.getController();
+            ctrl.setService(service);
+            stage.showAndWait();
+            rafraichirListe();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("ERREUR : " + e.getMessage());
+        }
+    }
 
     /** @return le service étudiant */
     public EtudiantService getService() {

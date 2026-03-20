@@ -83,16 +83,19 @@
         <Button text="Modifier" onAction="#ouvrirFormulaireModification"
                 prefHeight="35" prefWidth="120"
                 style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13;
-                       -fx-font-weight: bold; -fx-background-radius: 5;"/>
-        <Button text="supprimer" onAction="#supprimerEtudiant"
+                   -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="Supprimer" onAction="#supprimerEtudiant"
                 prefHeight="35" prefWidth="120"
                 style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 13;
-                       -fx-font-weight: bold; -fx-background-radius: 5;"/>
+                   -fx-font-weight: bold; -fx-background-radius: 5;"/>
+        <Button text="Saisie resultats" onAction="#ouvrirSaisieResultats"
+                prefHeight="35"
+                style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-size: 13;
+                   -fx-font-weight: bold; -fx-background-radius: 5;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text=" Semestre suivant" onAction="#passerSemestreSuivant"
+        <Button text="Semestre suivant" onAction="#passerSemestreSuivant"
                 prefHeight="35"
                 style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 13;
-                       -fx-font-weight: bold; -fx-background-radius: 5;"/>
+                   -fx-font-weight: bold; -fx-background-radius: 5;"/>
     </HBox>
-
-</VBox>
+    </VBox>
