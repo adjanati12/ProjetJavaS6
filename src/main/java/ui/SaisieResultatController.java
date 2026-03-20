@@ -1,5 +1,7 @@
 package ui;
-
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
+import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -240,5 +242,80 @@ public class SaisieResultatController {
     @FXML
     public void fermer() {
         ((Stage) tableau.getScene().getWindow()).close();
+    }
+    /** Ouvre la fenetre d'inscription en masse a une UE */
+    @FXML
+    public void ouvrirInscriptionMasse() {
+        // Choisir une UE
+        ChoiceDialog<UE> dialogUE = new ChoiceDialog<>(service.getUes().get(0), service.getUes());
+        dialogUE.setTitle("Inscription en masse");
+        dialogUE.setHeaderText("Choisir une UE");
+        dialogUE.setContentText("UE :");
+        dialogUE.showAndWait().ifPresent(ue -> {
+            // Choisir les etudiants
+            List<Etudiant> etudiantsDisponibles = new ArrayList<>();
+            for (Etudiant e : service.getEtudiants()) {
+                if (service.peutSInscrire(e, ue) && !service.estDejaInscrit(e, ue)) {
+                    etudiantsDisponibles.add(e);
+                }
+            }
+
+            if (etudiantsDisponibles.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Inscription en masse");
+                alert.setContentText("Aucun etudiant disponible pour cette UE.");
+                alert.showAndWait();
+                return;
+            }
+
+            // Afficher une liste avec cases a cocher
+            Dialog<List<Etudiant>> dialog = new Dialog<>();
+            dialog.setTitle("Inscription en masse - " + ue.getNom());
+            dialog.setHeaderText("Selectionnez les etudiants a inscrire :");
+
+            ButtonType btnConfirmer = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(btnConfirmer, ButtonType.CANCEL);
+
+            VBox vbox = new VBox(8);
+            vbox.setStyle("-fx-padding: 15;");
+            List<CheckBox> checkBoxes = new ArrayList<>();
+            for (Etudiant e : etudiantsDisponibles) {
+                CheckBox cb = new CheckBox(e.getNomComplet() + " (" + e.getNumero() + ")");
+                checkBoxes.add(cb);
+                vbox.getChildren().add(cb);
+            }
+
+            ScrollPane scroll = new ScrollPane(vbox);
+            scroll.setPrefHeight(300);
+            dialog.getDialogPane().setContent(scroll);
+
+            dialog.setResultConverter(btn -> {
+                if (btn == btnConfirmer) {
+                    List<Etudiant> selectionnes = new ArrayList<>();
+                    for (int i = 0; i < checkBoxes.size(); i++) {
+                        if (checkBoxes.get(i).isSelected()) {
+                            selectionnes.add(etudiantsDisponibles.get(i));
+                        }
+                    }
+                    return selectionnes;
+                }
+                return null;
+            });
+
+            dialog.showAndWait().ifPresent(selectionnes -> {
+                int nb = 0;
+                for (Etudiant e : selectionnes) {
+                    service.inscrire(e, ue, service.getAnneeCourante(), service.getSemestreCourant());
+                    nb++;
+                }
+                if (nb > 0) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Inscription en masse");
+                    alert.setContentText(nb + " etudiant(s) inscrits a " + ue.getNom() + " !");
+                    alert.showAndWait();
+                    rafraichirTableau();
+                }
+            });
+        });
     }
 }

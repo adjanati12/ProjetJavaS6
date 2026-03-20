@@ -38,6 +38,11 @@
         <Button text="Tout echouer" onAction="#toutEchouer" maxWidth="Infinity"
                 style="-fx-background-color: #f44336; -fx-text-fill: white;
                        -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 0;"/>
+        <Separator/>
+        <Label text="Inscription en masse" style="-fx-font-weight: bold;"/>
+        <Button text="Inscrire a une UE" onAction="#ouvrirInscriptionMasse" maxWidth="Infinity"
+                style="-fx-background-color: #1565c0; -fx-text-fill: white;
+               -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 0;"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
