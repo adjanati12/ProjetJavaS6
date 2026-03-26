@@ -1,6 +1,7 @@
 package service;
 
 import dao.EtudiantDAO;
+import dao.InscriptionDAO;
 import dao.UEDAO;
 import model.*;
 import java.util.ArrayList;
@@ -157,7 +158,101 @@ public class EtudiantService {
     public Etudiant ajouterEtudiant(String numero, String nom, String prenom) {
         return ajouterEtudiant(numero, nom, prenom, null);
     }
+    public int calculerEctsSemestre(Etudiant etudiant) {
+        int total = 0;
+        for (Inscription ins : etudiant.getInscriptions()) {
+            if (ins.getAnneeUniversitaire().equals(anneeCourante)
+                    && ins.getSemestre() == semestreCourant
+                    && !ins.isValide()
+                    && !ins.isEchouee()) {
+                total += ins.getUe().getEcts();
+            }
+        }
+        return total;
+    }
 
+    public ResultatInscription verifierInscription(Etudiant etudiant, UE ue) {
+        // 1. Déjà inscrit ?
+        if (estDejaInscrit(etudiant, ue)) {
+            return ResultatInscription.DEJA_INSCRIT;
+        }
+
+        // 2. Prérequis manquants ?
+        for (UE prerequis : ue.getPrerequis()) {
+            if (!etudiant.aValide(prerequis)) {
+                return ResultatInscription.PREREQUIS;
+            }
+        }
+
+        // 3. Vérification ECTS
+        int ectsSemestre = calculerEctsSemestre(etudiant);
+        int apresAjout   = ectsSemestre + ue.getEcts();
+
+        if (apresAjout > 39) {
+            return ResultatInscription.BLOQUE_ECTS;
+        }
+        if (apresAjout > 30) {
+            return ResultatInscription.DEROGATION;
+        }
+
+        return ResultatInscription.OK;
+    }
+
+    public void inscrireAvecControle(Etudiant etudiant, UE ue,
+                                     String annee, Semestre semestre)
+            throws InscriptionException, SQLException {
+
+        ResultatInscription resultat = verifierInscription(etudiant, ue);
+
+        switch (resultat) {
+            case PREREQUIS:
+                throw new InscriptionException(
+                        "Inscription impossible : les prérequis de l'UE \""
+                                + ue.getNom() + "\" ne sont pas tous validés.");
+
+            case DEJA_INSCRIT:
+                throw new InscriptionException(
+                        "L'étudiant " + etudiant.getNomComplet()
+                                + " est déjà inscrit à \"" + ue.getNom()
+                                + "\" ce semestre.");
+
+            case BLOQUE_ECTS:
+                int actuel = calculerEctsSemestre(etudiant);
+                throw new InscriptionException(
+                        "Inscription impossible : ajouter " + ue.getEcts()
+                                + " ECTS dépasserait la limite absolue de 39 ECTS "
+                                + "(total actuel : " + actuel + " ECTS).");
+
+            case DEROGATION:
+                // On laisse passer mais le contrôleur devra
+                // afficher une alerte de dérogation à l'utilisateur
+                break;
+
+            case OK:
+            default:
+                break;
+        }
+
+        // Persister en base (le trigger Oracle bloquera aussi si > 39)
+        try {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+            new InscriptionDAO(conn).inscrire(etudiant, ue, annee, semestre);
+        } catch (SQLException e) {
+            // Intercepter les erreurs Oracle des triggers
+            if (e.getErrorCode() == 20001) {
+                throw new InscriptionException(
+                        "Bloqué par Oracle : " + e.getMessage());
+            }
+            if (e.getErrorCode() == 20002) {
+                throw new InscriptionException(
+                        "Bloqué par Oracle : double inscription détectée.");
+            }
+            throw e; // Autres erreurs SQL → on remonte
+        }
+
+        // Mettre à jour en mémoire
+        etudiant.ajouterInscription(new Inscription(ue, annee, semestre));
+    }
     /** @return true si l'étudiant a été supprimé */
     public boolean supprimerEtudiant(String numero) {
         return etudiants.removeIf(e -> e.getNumero().equals(numero));
