@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<VBox spacing="15" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ui.InscriptionController">
-    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+<VBox spacing="0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.InscriptionController"
+      style="-fx-background-color: #F0F2F8;" prefWidth="400">
 
-    <Label text="Choisir une UE :" />
-    <ComboBox fx:id="comboUE" maxWidth="Infinity" />
+    <VBox style="-fx-background-color: #1C2A4A; -fx-padding: 20 26 16 26;" spacing="3">
+        <Label text="Inscrire à une UE"
+               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Georgia';"/>
+        <Label text="Seules les UE dont les prérequis sont validés sont proposées"
+               style="-fx-font-size: 10; -fx-text-fill: #7B9CC8;"/>
+    </VBox>
 
-    <Label fx:id="messageErreur" style="-fx-text-fill: red;" text="" />
+    <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 22 26;">
+        <VBox spacing="5">
+            <Label text="Unité d'Enseignement" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+            <ComboBox fx:id="comboUE" maxWidth="Infinity"
+                      style="-fx-font-size: 13; -fx-background-radius: 8; -fx-border-color: #CBD5E1; -fx-border-radius: 8;"/>
+        </VBox>
+        <Label fx:id="messageErreur" text=""
+               style="-fx-text-fill: #DC2626; -fx-font-size: 12; -fx-background-color: #FEF2F2;
+                      -fx-padding: 8 12; -fx-background-radius: 7;" maxWidth="Infinity"/>
+    </VBox>
 
-    <HBox spacing="10">
-        <Button text="Inscrire" onAction="#inscrire" />
-        <Button text="Annuler" onAction="#annuler" />
+    <HBox spacing="10" alignment="CENTER_RIGHT"
+          style="-fx-padding: 14 26; -fx-background-color: #F8FAFC;
+                 -fx-border-color: #E2E8F0; -fx-border-width: 1 0 0 0;">
+        <Button text="Annuler" onAction="#annuler"
+                style="-fx-background-color: transparent; -fx-text-fill: #64748B; -fx-font-size: 13;
+                       -fx-background-radius: 8; -fx-padding: 9 18; -fx-border-color: #CBD5E1;
+                       -fx-border-radius: 8; -fx-cursor: hand;"/>
+        <Button text="Inscrire" onAction="#inscrire"
+                style="-fx-background-color: #1C2A4A; -fx-text-fill: white; -fx-font-size: 13;
+                       -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 18; -fx-cursor: hand;"/>
     </HBox>
+
 </VBox>

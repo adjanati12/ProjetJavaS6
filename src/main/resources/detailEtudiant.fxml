@@ -2,105 +2,116 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ui.DetailEtudiantController"
-      style="-fx-background-color: #f5f5f5; -fx-padding: 20;" spacing="10">
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.DetailEtudiantController"
+            style="-fx-background-color: #F0F2F8;">
 
-    <!-- HEADER -->
-    <HBox alignment="CENTER_LEFT" spacing="15">
-        <Button text="Retour a la liste" onAction="#fermer"
-                style="-fx-background-color: transparent; -fx-text-fill: #1a237e;
-                       -fx-font-weight: bold; -fx-font-size: 12;"/>
-        <Label fx:id="labelNom"
-               style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Modifier" onAction="#ouvrirModification"
-                style="-fx-background-color: #FF9800; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 6 14;"/>
-    </HBox>
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16"
+              style="-fx-background-color: white; -fx-padding: 14 24;
+                     -fx-border-color: #E2E8F0; -fx-border-width: 0 0 1 0;">
+            <Button text="← Retour" onAction="#fermer"
+                    style="-fx-background-color: transparent; -fx-text-fill: #64748B; -fx-font-size: 12;
+                           -fx-cursor: hand; -fx-border-color: #CBD5E1; -fx-border-radius: 6;
+                           -fx-background-radius: 6; -fx-padding: 6 12;"/>
+            <Label fx:id="labelNom"
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1C2A4A; -fx-font-family: 'Georgia';"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Modifier" onAction="#ouvrirModification"
+                    style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 12;
+                           -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            <Button text="Fermer" onAction="#fermer"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94A3B8; -fx-font-size: 12;
+                           -fx-background-radius: 7; -fx-padding: 8 14; -fx-cursor: hand;"/>
+        </HBox>
+    </top>
 
-    <!-- INFOS ETUDIANT -->
-    <HBox spacing="30" style="-fx-background-color: white; -fx-padding: 12;
-                               -fx-background-radius: 8; -fx-border-color: #e0e0e0;
-                               -fx-border-radius: 8;">
-        <VBox spacing="3">
-            <Label text="N Etudiant" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-            <Label fx:id="labelNumero" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
+    <center>
+        <VBox spacing="16" style="-fx-padding: 20 24;">
+
+            <!-- CARTE IDENTITÉ -->
+            <HBox style="-fx-background-color: white; -fx-background-radius: 12;
+                         -fx-border-color: #E2E8F0; -fx-border-radius: 12;">
+                <HBox spacing="32" style="-fx-padding: 20 28;" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <VBox spacing="3">
+                        <Label text="N° ÉTUDIANT" style="-fx-font-size: 9; -fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                        <Label fx:id="labelNumero" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1C2A4A;"/>
+                    </VBox>
+                    <VBox spacing="3">
+                        <Label text="MENTION" style="-fx-font-size: 9; -fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                        <Label fx:id="labelMention" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1C2A4A;"/>
+                    </VBox>
+                    <VBox spacing="3">
+                        <Label text="PARCOURS" style="-fx-font-size: 9; -fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                        <Label fx:id="labelParcours" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1C2A4A;"/>
+                    </VBox>
+                    <VBox spacing="3">
+                        <Label text="SEMESTRE" style="-fx-font-size: 9; -fx-text-fill: #94A3B8; -fx-font-weight: bold;"/>
+                        <Label fx:id="labelSemestre" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1C2A4A;"/>
+                    </VBox>
+                </HBox>
+                <!-- Bloc ECTS -->
+                <VBox spacing="6" alignment="CENTER"
+                      style="-fx-background-color: #1C2A4A; -fx-padding: 20 28;
+                             -fx-background-radius: 0 12 12 0; -fx-min-width: 200;">
+                    <Label text="ECTS VALIDÉS" style="-fx-font-size: 9; -fx-text-fill: #7B9CC8; -fx-font-weight: bold;"/>
+                    <Label fx:id="labelEcts"
+                           style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Georgia';"/>
+                    <ProgressBar fx:id="progressDiplome" prefWidth="150" prefHeight="6"
+                                 style="-fx-accent: #5DADE2;"/>
+                    <Label fx:id="labelPourcentage" style="-fx-font-size: 11; -fx-text-fill: #7B9CC8;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Label ECTS semestre -->
+            <Label fx:id="labelEctsSemestre" maxWidth="Infinity"
+                   style="-fx-background-color: #EFF6FF; -fx-text-fill: #1D4ED8; -fx-font-size: 12;
+                          -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 8;"/>
+
+            <!-- ONGLETS -->
+            <TabPane VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-tab-min-width: 130;">
+                <Tab text="UE en cours" closable="false">
+                    <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 16;
+                                              -fx-background-radius: 0 10 10 10; -fx-border-color: #E2E8F0;
+                                              -fx-border-radius: 0 10 10 10;">
+                        <ListView fx:id="listeUeEnCours" prefHeight="180"
+                                  style="-fx-background-radius: 8; -fx-border-color: #F1F5F9;"/>
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <Button text="Valider / Échouer l'UE sélectionnée" onAction="#validerUE"
+                                    style="-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-font-size: 12;
+                                           -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                            <Button text="+ Inscrire à une UE" onAction="#ajouterInscription"
+                                    style="-fx-background-color: #1C2A4A; -fx-text-fill: white; -fx-font-size: 12;
+                                           -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                        </HBox>
+                    </VBox>
+                </Tab>
+                <Tab text="UE validées" closable="false">
+                    <VBox style="-fx-background-color: white; -fx-padding: 16;
+                                 -fx-background-radius: 0 10 10 10; -fx-border-color: #E2E8F0; -fx-border-radius: 0 10 10 10;">
+                        <ListView fx:id="listeUeValidees" prefHeight="210"
+                                  style="-fx-background-radius: 8; -fx-border-color: #F1F5F9;"/>
+                    </VBox>
+                </Tab>
+                <Tab text="UE disponibles" closable="false">
+                    <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 16;
+                                              -fx-background-radius: 0 10 10 10; -fx-border-color: #E2E8F0; -fx-border-radius: 0 10 10 10;">
+                        <Label text="Prérequis validés — non encore suivies ce semestre"
+                               style="-fx-text-fill: #94A3B8; -fx-font-size: 11;"/>
+                        <ListView fx:id="listeUEDisponibles" prefHeight="190"
+                                  style="-fx-background-radius: 8; -fx-border-color: #F1F5F9;"/>
+                    </VBox>
+                </Tab>
+                <Tab text="Historique" closable="false">
+                    <VBox style="-fx-background-color: white; -fx-padding: 16;
+                                 -fx-background-radius: 0 10 10 10; -fx-border-color: #E2E8F0; -fx-border-radius: 0 10 10 10;">
+                        <ListView fx:id="listeHistorique" prefHeight="210"
+                                  style="-fx-background-radius: 8; -fx-border-color: #F1F5F9;"/>
+                    </VBox>
+                </Tab>
+            </TabPane>
+
         </VBox>
-        <VBox spacing="3">
-            <Label text="Mention" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-            <Label fx:id="labelMention" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-        </VBox>
-        <VBox spacing="3">
-            <Label text="Parcours" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-            <Label fx:id="labelParcours" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-        </VBox>
-        <VBox spacing="3">
-            <Label text="Semestre actuel" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-            <Label fx:id="labelSemestre" style="-fx-font-weight: bold; -fx-font-size: 13;"/>
-        </VBox>
-        <Region HBox.hgrow="ALWAYS"/>
-        <VBox spacing="3" alignment="CENTER_RIGHT">
-            <Label text="ECTS valides" style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-            <Label fx:id="labelEcts"
-                   style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1a237e;"/>
-            <ProgressBar fx:id="progressDiplome" prefWidth="150" prefHeight="8"/>
-            <Label fx:id="labelPourcentage"
-                   style="-fx-font-size: 11; -fx-text-fill: gray;"/>
-        </VBox>
-    </HBox>
+    </center>
 
-    <!-- ONGLETS -->
-    <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS"
-             style="-fx-background-color: white; -fx-background-radius: 8;">
-
-        <!-- ONGLET UE EN COURS -->
-        <Tab text="UE en cours" closable="false">
-            <VBox spacing="10" style="-fx-padding: 15;">
-                <Label fx:id="labelEctsSemestre"
-                       style="-fx-background-color: #e3f2fd; -fx-padding: 6 12;
-                              -fx-background-radius: 5; -fx-font-size: 12;
-                              -fx-text-fill: #1565c0; -fx-font-weight: bold;"/>
-                <ListView fx:id="listeUeEnCours" VBox.vgrow="ALWAYS" prefHeight="200"/>
-                <Button text="+ Inscrire a une UE" onAction="#ajouterInscription"
-                        style="-fx-background-color: #1a237e; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
-            </VBox>
-        </Tab>
-
-        <!-- ONGLET UE VALIDEES -->
-        <Tab text="UE validees" closable="false">
-            <VBox spacing="10" style="-fx-padding: 15;">
-                <ListView fx:id="listeUeValidees" VBox.vgrow="ALWAYS" prefHeight="250"/>
-            </VBox>
-        </Tab>
-
-        <!-- ONGLET UE DISPONIBLES -->
-        <Tab text="UE disponibles" closable="false">
-            <VBox spacing="10" style="-fx-padding: 15;">
-                <Label text="UE dont les prerequis sont valides et non encore suivies :"
-                       style="-fx-text-fill: gray; -fx-font-size: 11;"/>
-                <ListView fx:id="listeUEDisponibles" VBox.vgrow="ALWAYS" prefHeight="250"/>
-            </VBox>
-        </Tab>
-
-        <!-- ONGLET HISTORIQUE -->
-        <Tab text="Historique" closable="false">
-            <VBox spacing="10" style="-fx-padding: 15;">
-                <ListView fx:id="listeHistorique" VBox.vgrow="ALWAYS" prefHeight="250"/>
-            </VBox>
-        </Tab>
-
-    </TabPane>
-
-    <!-- BOUTON VALIDER UE -->
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Button text="Valider / Echouer UE" onAction="#validerUE"
-                style="-fx-background-color: #FF9800; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
-        <Button text="Fermer" onAction="#fermer"
-                style="-fx-background-color: #757575; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
-    </HBox>
-
-</VBox>
+</BorderPane>

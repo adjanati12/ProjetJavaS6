@@ -2,52 +2,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ui.ModifierEtudiantController"
-      style="-fx-padding: 25; -fx-background-color: white;" prefWidth="400">
+      style="-fx-background-color: #F0F2F8;" prefWidth="440">
 
-    <Label text="Modifier un etudiant"
-           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
-    <Separator/>
+    <VBox style="-fx-background-color: #1C2A4A; -fx-padding: 22 28 18 28;" spacing="4">
+        <Label text="Modifier un étudiant"
+               style="-fx-font-size: 17; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Georgia';"/>
+        <Label fx:id="labelNumero" style="-fx-font-size: 12; -fx-text-fill: #7B9CC8;"/>
+    </VBox>
 
-    <GridPane hgap="15" vgap="12">
-        <Label text="Numero" GridPane.rowIndex="0" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <Label fx:id="labelNumero" style="-fx-text-fill: gray;"
-               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <VBox spacing="14" style="-fx-background-color: white; -fx-padding: 24 28;">
+        <HBox spacing="12">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Nom *" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <TextField fx:id="champNom"
+                           style="-fx-font-size: 13; -fx-padding: 9 12; -fx-background-radius: 8;
+                                  -fx-border-color: #CBD5E1; -fx-border-radius: 8; -fx-background-color: white;"/>
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Prénom *" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <TextField fx:id="champPrenom"
+                           style="-fx-font-size: 13; -fx-padding: 9 12; -fx-background-radius: 8;
+                                  -fx-border-color: #CBD5E1; -fx-border-radius: 8; -fx-background-color: white;"/>
+            </VBox>
+        </HBox>
+        <VBox spacing="5">
+            <Label text="Mention" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+            <ComboBox fx:id="comboMention" promptText="Choisir une mention" maxWidth="Infinity"
+                      style="-fx-font-size: 13; -fx-background-radius: 8; -fx-border-color: #CBD5E1; -fx-border-radius: 8;"/>
+        </VBox>
+        <VBox spacing="5">
+            <Label text="Parcours" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+            <ComboBox fx:id="comboParcours" promptText="Choisir un parcours" maxWidth="Infinity"
+                      style="-fx-font-size: 13; -fx-background-radius: 8; -fx-border-color: #CBD5E1; -fx-border-radius: 8;"/>
+        </VBox>
+        <Label fx:id="messageErreur" text=""
+               style="-fx-text-fill: #DC2626; -fx-font-size: 12; -fx-background-color: #FEF2F2;
+                      -fx-padding: 8 12; -fx-background-radius: 7;" maxWidth="Infinity"/>
+    </VBox>
 
-        <Label text="Nom *" GridPane.rowIndex="1" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <TextField fx:id="champNom" prefWidth="220"
-                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-        <Label text="Prenom *" GridPane.rowIndex="2" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <TextField fx:id="champPrenom" prefWidth="220"
-                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-        <Label text="Mention" GridPane.rowIndex="3" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="comboMention" promptText="Choisir une mention"
-                  prefWidth="220"
-                  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-        <Label text="Parcours" GridPane.rowIndex="4" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="comboParcours" promptText="Choisir un parcours"
-                  prefWidth="220"
-                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-    </GridPane>
-
-    <Label fx:id="messageErreur" style="-fx-text-fill: red; -fx-font-size: 12;"/>
-
-    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+    <HBox spacing="10" alignment="CENTER_RIGHT"
+          style="-fx-padding: 16 28; -fx-background-color: #F8FAFC;
+                 -fx-border-color: #E2E8F0; -fx-border-width: 1 0 0 0;">
         <Button text="Annuler" onAction="#annuler"
-                style="-fx-background-color: #757575; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
+                style="-fx-background-color: transparent; -fx-text-fill: #64748B; -fx-font-size: 13;
+                       -fx-background-radius: 8; -fx-padding: 9 20; -fx-border-color: #CBD5E1;
+                       -fx-border-radius: 8; -fx-cursor: hand;"/>
         <Button text="Enregistrer" onAction="#enregistrer"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;"/>
+                style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13;
+                       -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 20; -fx-cursor: hand;"/>
     </HBox>
 
 </VBox>
