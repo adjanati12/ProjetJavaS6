@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class EtudiantService {
 
-    private final String anneeCourante = "2025-2026";
+    private String anneeCourante = "2025-2026"; // ✅ "final" retiré pour permettre l'incrémentation
     private Semestre semestreCourant = Semestre.IMPAIR;
     private final List<Etudiant> etudiants = new ArrayList<>();
     private final List<UE> ues = new ArrayList<>();
@@ -98,6 +98,7 @@ public class EtudiantService {
         }
         return result;
     }
+
     public void chargerDepuisBDD() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
 
@@ -214,8 +215,15 @@ public class EtudiantService {
     /** @return le semestre courant */
     public Semestre getSemestreCourant() { return semestreCourant; }
 
-    /** Passe au semestre suivant (IMPAIR → PAIR → IMPAIR) */
+    /** Passe au semestre suivant (IMPAIR → PAIR → IMPAIR de l'année suivante) */
     public void passerAuSemestreSuivant() {
+        if (semestreCourant == Semestre.PAIR) {
+            // ✅ On repasse en IMPAIR → on incrémente l'année universitaire
+            String[] parts = anneeCourante.split("-");
+            int debut = Integer.parseInt(parts[0]) + 1;
+            int fin   = Integer.parseInt(parts[1]) + 1;
+            anneeCourante = debut + "-" + fin;
+        }
         semestreCourant = (semestreCourant == Semestre.IMPAIR) ? Semestre.PAIR : Semestre.IMPAIR;
     }
 
