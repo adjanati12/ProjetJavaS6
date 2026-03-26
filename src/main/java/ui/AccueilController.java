@@ -13,6 +13,9 @@ import model.Mention;
 import model.Parcours;
 import service.CsvLoader;
 import service.EtudiantService;
+import dao.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +49,18 @@ public class AccueilController {
 
     @FXML
     public void initialize() {
+        try {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+            System.out.println("Connexion Oracle OK : " + conn.getMetaData().getURL());
+
+            // Une fois que ça marche, tu remplaceras ce System.out
+            // par service.chargerDepuisBDD();
+
+        } catch (SQLException e) {
+            System.err.println("Connexion Oracle ECHOUEE : " + e.getMessage());
+        }
+
+        // Garde le CSV pour l'instant le temps de tester
         CsvLoader.chargerMentions(service);
         CsvLoader.chargerUEs(service);
         CsvLoader.chargerParcours(service);
