@@ -1,8 +1,14 @@
 package service;
 
+import dao.EtudiantDAO;
+import dao.UEDAO;
 import model.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import dao.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Service de gestion des étudiants, mentions, parcours et inscriptions.
@@ -91,6 +97,19 @@ public class EtudiantService {
             }
         }
         return result;
+    }
+    public void chargerDepuisBDD() throws SQLException {
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+
+        // 1. Charger les UE (avec prérequis)
+        UEDAO uedao = new UEDAO(conn);
+        ues.clear();
+        ues.addAll(uedao.findAll());
+
+        // 2. Charger les étudiants (avec inscriptions)
+        EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
+        etudiants.clear();
+        etudiants.addAll(etudiantDAO.findAll(ues));
     }
 
     /** @return true si le numéro est déjà utilisé */

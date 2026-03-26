@@ -50,22 +50,17 @@ public class AccueilController {
     @FXML
     public void initialize() {
         try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            System.out.println("Connexion Oracle OK : " + conn.getMetaData().getURL());
-
-            // Une fois que ça marche, tu remplaceras ce System.out
-            // par service.chargerDepuisBDD();
-
+            service.chargerDepuisBDD();
+            System.out.println("Donnees chargees depuis Oracle !");
         } catch (SQLException e) {
-            System.err.println("Connexion Oracle ECHOUEE : " + e.getMessage());
+            System.err.println("Erreur chargement BDD : " + e.getMessage());
+            // Repli sur CSV si la BDD est inaccessible
+            CsvLoader.chargerMentions(service);
+            CsvLoader.chargerUEs(service);
+            CsvLoader.chargerParcours(service);
+            CsvLoader.chargerEtudiants(service);
+            CsvLoader.chargerInscriptions(service);
         }
-
-        // Garde le CSV pour l'instant le temps de tester
-        CsvLoader.chargerMentions(service);
-        CsvLoader.chargerUEs(service);
-        CsvLoader.chargerParcours(service);
-        CsvLoader.chargerEtudiants(service);
-        CsvLoader.chargerInscriptions(service);
 
         configurerColonnes();
         configurerFiltres();
