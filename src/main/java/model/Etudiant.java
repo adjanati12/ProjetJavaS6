@@ -73,10 +73,18 @@ public class Etudiant {
     public String getNomComplet() { return prenom + " " + nom; }
 
     /** @return true si l'étudiant a validé l'UE */
+    // Dans Etudiant.java — version avec équivalences
     public boolean aValide(UE ue) {
         for (Inscription inscription : inscriptions) {
+            // UE directement validée
             if (inscription.getUe().equals(ue) && inscription.isValide()) {
                 return true;
+            }
+            // UE équivalente validée
+            for (UE equiv : ue.getEquivalences()) {
+                if (inscription.getUe().equals(equiv) && inscription.isValide()) {
+                    return true;
+                }
             }
         }
         return false;

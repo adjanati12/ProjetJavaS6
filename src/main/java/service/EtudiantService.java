@@ -1,8 +1,6 @@
 package service;
 
-import dao.EtudiantDAO;
-import dao.InscriptionDAO;
-import dao.UEDAO;
+import dao.*;
 import model.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,20 +99,80 @@ public class EtudiantService {
     }
 
     public void chargerDepuisBDD() throws SQLException {
+
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+
+            // 1. Charger les mentions (et leurs parcours rattachés)
+            MentionDAO mentionDAO = new MentionDAO(conn);
+            mentions.clear();
+            mentions.addAll(mentionDAO.findAll(new ArrayList<>())); // premier passage sans UE
+
+            // 2. Charger les UE en leur passant les mentions pour résoudre la FK
+            UEDAO uedao = new UEDAO(conn);
+            ues.clear();
+            ues.addAll(uedao.findAll(mentions));
+
+            // 3. Recharger les mentions avec les UE disponibles
+            //    (pour résoudre les UE obligatoires des parcours si nécessaire)
+            mentions.clear();
+            mentions.addAll(mentionDAO.findAll(ues));
+
+            // 4. Construire la liste à plat des parcours
+            parcours.clear();
+            parcours.addAll(mentionDAO.getAllParcours(mentions));
+
+            // 5. Charger les étudiants avec leurs parcours et inscriptions
+            EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
+            etudiants.clear();
+            etudiants.addAll(etudiantDAO.findAll(ues, parcours));
+        }
+
+    public List<UE> reorienter(Etudiant etudiant, Parcours nouveauParcours)
+            throws SQLException {
+
+        List<UE> creditees = new ArrayList<>();
+
+        // 1. Changer le parcours en mémoire et en base
+        etudiant.setParcours(nouveauParcours);
         Connection conn = DatabaseConnection.getInstance().getConnection();
+        new EtudiantDAO(conn).update(etudiant);
 
-        // 1. Charger les UE (avec prérequis)
-        UEDAO uedao = new UEDAO(conn);
-        ues.clear();
-        ues.addAll(uedao.findAll());
+        // 2. Chercher les UE du nouveau parcours non encore validées
+        //    mais qui ont une équivalence avec une UE déjà validée
+        for (UE ueNouveau : ues) {
+            // Ignorer si déjà validée directement
+            if (etudiantAValideDirectement(etudiant, ueNouveau)) continue;
 
-        // 2. Charger les étudiants (avec inscriptions)
-        EtudiantDAO etudiantDAO = new EtudiantDAO(conn);
-        etudiants.clear();
-        etudiants.addAll(etudiantDAO.findAll(ues));
+            // Chercher une équivalence validée
+            for (UE equiv : ueNouveau.getEquivalences()) {
+                if (etudiantAValideDirectement(etudiant, equiv)) {
+                    // Créer une inscription validée par équivalence
+                    Inscription inscEquiv = new Inscription(
+                            ueNouveau, anneeCourante, semestreCourant);
+                    inscEquiv.setValide(true);
+                    etudiant.ajouterInscription(inscEquiv);
+
+                    // Persister en base
+                    new InscriptionDAO(conn).inscrire(
+                            etudiant, ueNouveau, anneeCourante, semestreCourant);
+                    new InscriptionDAO(conn).mettreAJourResultat(
+                            etudiant, ueNouveau, anneeCourante, semestreCourant, true);
+
+                    creditees.add(ueNouveau);
+                    break;
+                }
+            }
+        }
+
+        return creditees;
+    }
+    private boolean etudiantAValideDirectement(Etudiant etudiant, UE ue) {
+        for (Inscription ins : etudiant.getInscriptions()) {
+            if (ins.getUe().equals(ue) && ins.isValide()) return true;
+        }
+        return false;
     }
 
-    /** @return true si le numéro est déjà utilisé */
     public boolean numeroExisteDeja(String numero) {
         if (numero == null) return false;
         String n = numero.trim();

@@ -1,5 +1,8 @@
 package ui;
-
+import model.UE;
+import java.util.List;
+import dao.DatabaseConnection;
+import dao.EtudiantDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -7,6 +10,9 @@ import model.Etudiant;
 import model.Mention;
 import model.Parcours;
 import service.EtudiantService;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Controleur du formulaire de modification d'un etudiant.
@@ -77,7 +83,7 @@ public class ModifierEtudiantController {
     /** Enregistre les modifications */
     @FXML
     public void enregistrer() {
-        String nom = champNom.getText().trim();
+        String nom    = champNom.getText().trim();
         String prenom = champPrenom.getText().trim();
 
         if (nom.isEmpty() || prenom.isEmpty()) {
@@ -85,20 +91,50 @@ public class ModifierEtudiantController {
             return;
         }
 
+        Parcours ancienParcours  = etudiant.getParcours();
+        Parcours nouveauParcours = comboParcours.getValue();
+
         etudiant.setNom(nom);
         etudiant.setPrenom(prenom);
 
-        Parcours parcours = comboParcours.getValue();
-        if (parcours != null) {
-            etudiant.setParcours(parcours);
+        try {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+
+            if (nouveauParcours != null && !nouveauParcours.equals(ancienParcours)) {
+                // ── Réorientation : parcours changé ───────────────────────
+                List<UE> creditees = service.reorienter(etudiant, nouveauParcours);
+
+                Alert info = new Alert(Alert.AlertType.INFORMATION);
+                info.setTitle("Réorientation réussie");
+                if (creditees.isEmpty()) {
+                    info.setContentText("Réorientation vers " + nouveauParcours.getNom()
+                            + " effectuée.\nAucune équivalence d'UE trouvée.");
+                } else {
+                    StringBuilder msg = new StringBuilder(
+                            "Réorientation vers " + nouveauParcours.getNom()
+                                    + " effectuée.\n\nUE créditées par équivalence :\n");
+                    for (UE ue : creditees) {
+                        msg.append("• ").append(ue.getNom())
+                                .append(" (").append(ue.getEcts()).append(" ECTS)\n");
+                    }
+                    info.setContentText(msg.toString());
+                }
+                info.showAndWait();
+
+            } else {
+                // ── Modification simple : nom/prénom seulement ────────────
+                if (nouveauParcours != null) etudiant.setParcours(nouveauParcours);
+                new EtudiantDAO(conn).update(etudiant);
+            }
+
+        } catch (SQLException e) {
+            messageErreur.setText("Erreur base de données : " + e.getMessage());
+            return;
         }
 
-        if (accueilController != null) {
-            accueilController.rafraichirListe();
-        }
+        if (accueilController != null) accueilController.rafraichirListe();
         fermer();
     }
-
     @FXML
     public void annuler() {
         fermer();
